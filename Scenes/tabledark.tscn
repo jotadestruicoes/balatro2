@@ -1,0 +1,25 @@
+[gd_scene load_steps=2 format=3 uid="uid://ctjnk36stbbh5"]
+
+[ext_resource type="Texture2D" uid="uid://mhdo3wgnvehb" path="res://assets/tabledark.jpg" id="1_dm76t"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Tabledark" type="Sprite2D" parent="."]
+position = Vector2(480, 270)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_dm76t")
+
+[node name="Tabledark2" type="Sprite2D" parent="."]
+position = Vector2(1440, 270)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_dm76t")
+
+[node name="Tabledark3" type="Sprite2D" parent="."]
+position = Vector2(480, 810)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_dm76t")
+
+[node name="Tabledark4" type="Sprite2D" parent="."]
+position = Vector2(1439.5, 810)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_dm76t")
