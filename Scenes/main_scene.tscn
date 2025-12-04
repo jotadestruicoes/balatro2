@@ -1,12 +1,14 @@
-[gd_scene load_steps=8 format=3 uid="uid://diuo6tplhlwfn"]
+[gd_scene load_steps=10 format=3 uid="uid://diuo6tplhlwfn"]
 
 [ext_resource type="PackedScene" uid="uid://ctjnk36stbbh5" path="res://Scenes/tabledark.tscn" id="1_651ig"]
 [ext_resource type="Script" path="res://Scenes/card_manager.gd" id="2_tnipr"]
 [ext_resource type="Script" path="res://Scenes/player_hand.gd" id="4_5ief3"]
 [ext_resource type="PackedScene" uid="uid://yli63mx0h43d" path="res://Scenes/card_slot.tscn" id="4_xi0k4"]
 [ext_resource type="PackedScene" uid="uid://cqxn6767vob5b" path="res://Scenes/deck.tscn" id="5_12xsk"]
+[ext_resource type="PackedScene" uid="uid://vvvaxhpha2a5" path="res://Scenes/weapon_slot.tscn" id="7_74ykf"]
 [ext_resource type="Script" path="res://Scenes/input_manager.gd" id="7_lab4s"]
-[ext_resource type="Texture2D" uid="uid://e0wmvt10sp5d" path="res://assets/icon.svg" id="7_pygyc"]
+[ext_resource type="PackedScene" uid="uid://cjgiwpv487vj8" path="res://Scenes/armor_slot.tscn" id="8_otp2m"]
+[ext_resource type="PackedScene" uid="uid://b8mb4i0ax2dv8" path="res://Scenes/gold.tscn" id="9_hh51q"]
 
 [node name="MainScene" type="Node2D"]
 
@@ -19,19 +21,25 @@ z_index = -2
 [node name="CardManager" type="Node2D" parent="."]
 script = ExtResource("2_tnipr")
 
-[node name="CardSlot" parent="." instance=ExtResource("4_xi0k4")]
-position = Vector2(960, 540)
-
 [node name="PlayerHand" type="Node2D" parent="."]
 script = ExtResource("4_5ief3")
 
 [node name="Deck" parent="." instance=ExtResource("5_12xsk")]
+unique_name_in_owner = true
 z_index = 1
 position = Vector2(150, 890)
 
 [node name="InputManager" type="Node2D" parent="."]
 script = ExtResource("7_lab4s")
 
-[node name="Icon" type="Sprite2D" parent="."]
-position = Vector2(572, 907)
-texture = ExtResource("7_pygyc")
+[node name="SlotMiddle" parent="." instance=ExtResource("4_xi0k4")]
+position = Vector2(960, 540)
+
+[node name="CardSlot" parent="." instance=ExtResource("7_74ykf")]
+position = Vector2(150, 677)
+
+[node name="CardSlot2" parent="." instance=ExtResource("8_otp2m")]
+position = Vector2(310, 677)
+
+[node name="Gold" parent="." instance=ExtResource("9_hh51q")]
+position = Vector2(1757, 881)

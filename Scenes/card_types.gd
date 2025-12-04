@@ -1,0 +1,2 @@
+const CARD_TYPE = {
+}
