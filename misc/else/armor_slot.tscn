@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://cjgiwpv487vj8"]
 
-[ext_resource type="Script" path="res://Scenes/card_slot.gd" id="1_wax3k"]
+[ext_resource type="Script" path="res://misc/else/card_slot.gd" id="1_wax3k"]
 [ext_resource type="Texture2D" uid="uid://b0pi5m8j8xfrr" path="res://assets/ArmorSlot.png" id="2_abvto"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_drval"]

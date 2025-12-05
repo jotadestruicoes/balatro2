@@ -1,2 +1,0 @@
-const CARD_TYPE = {
-}

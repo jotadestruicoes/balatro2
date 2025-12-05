@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="MonsterCard" load_steps=2 format=3 uid="uid://bxe5eqr3ye8ik"]
+
+[ext_resource type="Script" path="res://misc/weapon/monster_card_res.gd" id="1_2vj15"]
+
+[resource]
+script = ExtResource("1_2vj15")
+health = 3
+damage = 1
+attack_speed = 3.0
+monster_type = 0
+name = ""
+card_type = 3
+tier = 0

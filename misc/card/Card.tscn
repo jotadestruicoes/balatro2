@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://d2sxrqlukapd8"]
+[gd_scene load_steps=5 format=3 uid="uid://d2sxrqlukapd8"]
 
-[ext_resource type="Script" path="res://Scenes/Card.gd" id="1_5rrjn"]
+[ext_resource type="Script" path="res://misc/card/Card.gd" id="1_5rrjn"]
 [ext_resource type="Texture2D" uid="uid://dpvuvvidi2fuc" path="res://assets/genericcard.png" id="2_ha7eb"]
+[ext_resource type="Resource" uid="uid://bfospr38sr7y6" path="res://misc/resources/sword.tres" id="2_q2ihy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bttkx"]
 size = Vector2(120, 156)
@@ -9,6 +10,7 @@ size = Vector2(120, 156)
 [node name="Card" type="Node2D"]
 z_index = 1
 script = ExtResource("1_5rrjn")
+resource = ExtResource("2_q2ihy")
 
 [node name="CardSprite" type="Sprite2D" parent="."]
 position = Vector2(0, -1)

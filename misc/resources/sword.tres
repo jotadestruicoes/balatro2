@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="WeaponCard" load_steps=2 format=3 uid="uid://bfospr38sr7y6"]
+
+[ext_resource type="Script" path="res://misc/weapon/weapon_card_res.gd" id="1_lb8lm"]
+
+[resource]
+script = ExtResource("1_lb8lm")
+damage = 1
+weapon_type = 1
+name = ""
+card_type = 0
+tier = 0

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ConsumableCard" load_steps=2 format=3 uid="uid://bk2tket28i8i0"]
+
+[ext_resource type="Script" path="res://misc/weapon/consumable_card_res.gd" id="1_kt8wd"]
+
+[resource]
+script = ExtResource("1_kt8wd")
+restoration = 2
+consumable_type = 0
+consumable_name = "chicken"
+card_type = 2
+tier = 0
