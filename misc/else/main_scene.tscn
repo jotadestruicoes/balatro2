@@ -8,8 +8,8 @@
 [ext_resource type="PackedScene" uid="uid://vvvaxhpha2a5" path="res://misc/else/weapon_slot.tscn" id="7_74ykf"]
 [ext_resource type="Script" path="res://misc/else/input_manager.gd" id="7_lab4s"]
 [ext_resource type="PackedScene" uid="uid://cjgiwpv487vj8" path="res://misc/else/armor_slot.tscn" id="8_otp2m"]
+[ext_resource type="Script" path="res://misc/else/card_slot_armor.gd" id="9_ekgsj"]
 [ext_resource type="PackedScene" uid="uid://b8mb4i0ax2dv8" path="res://misc/else/gold.tscn" id="9_hh51q"]
-[ext_resource type="PackedScene" uid="uid://d2sxrqlukapd8" path="res://misc/card/Card.tscn" id="10_rbao7"]
 
 [node name="MainScene" type="Node2D"]
 
@@ -22,9 +22,6 @@ z_index = -2
 [node name="CardManager" type="Node2D" parent="."]
 script = ExtResource("2_tnipr")
 
-[node name="Card" parent="CardManager" instance=ExtResource("10_rbao7")]
-position = Vector2(-466, 554)
-
 [node name="PlayerHand" type="Node2D" parent="."]
 script = ExtResource("4_5ief3")
 
@@ -36,13 +33,20 @@ position = Vector2(150, 890)
 script = ExtResource("7_lab4s")
 
 [node name="SlotMiddle" parent="." instance=ExtResource("4_xi0k4")]
-position = Vector2(960, 540)
+position = Vector2(800, 540)
 
-[node name="CardSlot" parent="." instance=ExtResource("7_74ykf")]
+[node name="CardSlotWeapon" parent="." instance=ExtResource("7_74ykf")]
 position = Vector2(150, 677)
 
-[node name="CardSlot2" parent="." instance=ExtResource("8_otp2m")]
+[node name="CardSlotArmor" parent="." instance=ExtResource("8_otp2m")]
 position = Vector2(310, 677)
+script = ExtResource("9_ekgsj")
 
 [node name="Gold" parent="." instance=ExtResource("9_hh51q")]
 position = Vector2(1757, 881)
+
+[node name="SlotMiddle2" parent="." instance=ExtResource("4_xi0k4")]
+position = Vector2(960, 540)
+
+[node name="SlotMiddle3" parent="." instance=ExtResource("4_xi0k4")]
+position = Vector2(1119, 540)

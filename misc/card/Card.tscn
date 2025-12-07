@@ -1,21 +1,20 @@
-[gd_scene load_steps=5 format=3 uid="uid://d2sxrqlukapd8"]
+[gd_scene load_steps=6 format=3 uid="uid://d2sxrqlukapd8"]
 
 [ext_resource type="Script" path="res://misc/card/Card.gd" id="1_5rrjn"]
 [ext_resource type="Texture2D" uid="uid://dpvuvvidi2fuc" path="res://assets/genericcard.png" id="2_ha7eb"]
-[ext_resource type="Resource" uid="uid://bfospr38sr7y6" path="res://misc/resources/sword.tres" id="2_q2ihy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bttkx"]
 size = Vector2(120, 156)
 
+[sub_resource type="SystemFont" id="SystemFont_52fio"]
+subpixel_positioning = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_6n1d8"]
+font = SubResource("SystemFont_52fio")
+
 [node name="Card" type="Node2D"]
 z_index = 1
 script = ExtResource("1_5rrjn")
-resource = ExtResource("2_q2ihy")
-
-[node name="CardSprite" type="Sprite2D" parent="."]
-position = Vector2(0, -1)
-scale = Vector2(3, 3)
-texture = ExtResource("2_ha7eb")
 
 [node name="Area2D" type="Area2D" parent="."]
 
@@ -23,23 +22,37 @@ texture = ExtResource("2_ha7eb")
 position = Vector2(0, -1)
 shape = SubResource("RectangleShape2D_bttkx")
 
+[node name="CardSprite" type="Sprite2D" parent="."]
+position = Vector2(0, -1)
+scale = Vector2(3, 3)
+texture = ExtResource("2_ha7eb")
+
 [node name="Attack" type="RichTextLabel" parent="."]
-modulate = Color(0, 0, 0, 1)
-offset_left = 28.0
-offset_top = 27.0
-offset_right = 68.0
-offset_bottom = 67.0
-scale = Vector2(2, 2)
+modulate = Color(0.133333, 0.133333, 0.133333, 1)
+offset_left = -48.0
+offset_top = 38.0
+offset_right = -8.0
+offset_bottom = 78.0
+scale = Vector2(1.5, 1.5)
 text = "0"
 
 [node name="Health" type="RichTextLabel" parent="."]
-modulate = Color(0, 0, 0, 1)
-offset_left = -47.0
-offset_top = 27.0
-offset_right = -7.0
-offset_bottom = 67.0
-scale = Vector2(2, 2)
+modulate = Color(0.133333, 0.133333, 0.133333, 1)
+offset_left = 35.0
+offset_top = 38.0
+offset_right = 75.0
+offset_bottom = 78.0
+scale = Vector2(1.5, 1.5)
 text = "0"
+
+[node name="Tier" type="Label" parent="."]
+modulate = Color(0, 0, 0, 1)
+offset_left = -49.0
+offset_top = -69.0
+offset_right = -9.0
+offset_bottom = -46.0
+text = "T0"
+label_settings = SubResource("LabelSettings_6n1d8")
 
 [connection signal="mouse_entered" from="Area2D" to="." method="_on_generic_card_mouse_entered"]
 [connection signal="mouse_exited" from="Area2D" to="." method="_on_generic_card_mouse_exited"]

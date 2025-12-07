@@ -15,29 +15,55 @@ func _ready() -> void:
 	input_manager.connect("left_mouse_button_released", on_left_click_released)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if card_being_dragged:
 		var mouse_pos = get_global_mouse_position()
 		card_being_dragged.position = Vector2(clamp(mouse_pos.x, 0, screen_size.x), clamp(mouse_pos.y, 0, screen_size.y))
 
 func start_drag(card):
+	#print(card_slot_found.card_in_slot)
+	
 	card_being_dragged = card
 	card.scale = Vector2(1,1)
 	
 func finish_drag():
 	card_being_dragged.scale = Vector2(1.05, 1.05)
-	var card_slot_found = raycast_check_for_card_slot()
+	var card_slot_found = raycast_check_for_card_slot() 
 	
-	if card_slot_found and not card_slot_found.card_in_slot:
+	if card_slot_found and not card_slot_found.card_in_slot and card_slot_found.card_type_allowed.find(card_being_dragged.card_type) != -1:
 		player_hand.remove_card_from_hand(card_being_dragged)
 		card_being_dragged.position = card_slot_found.position
-		card_being_dragged.get_node("Area2D/CollisionShape2D").disabled = true
+		#card_being_dragged.get_node("Area2D/CollisionShape2D").disabled = true
 		card_slot_found.card_in_slot = true
+		#print(card_slot_found.card_in_slot)
 	else:
 		player_hand.add_card_to_hand(card_being_dragged)
 	
 	card_being_dragged = null
 	
+#func finish_drag():
+	#var card_slot_found = raycast_check_for_card_slot()
+	#var slot_of_card = card_being_dragged.current_slot  # você precisa armazenar
+	#
+	#if card_slot_found and card_slot_found != slot_of_card:
+		#if card_slot_found.card_in_slot:
+			#return  # slot ocupado → não solta aqui
+#
+	## liberar o slot antigo
+	#if slot_of_card:
+		#slot_of_card.card_in_slot = false
+#
+	## tentar novo slot
+	#if card_slot_found and not card_slot_found.card_in_slot:
+		#player_hand.remove_card_from_hand(card_being_dragged)
+		#card_being_dragged.position = card_slot_found.position
+		##card_being_dragged.get_node("Area2D/CollisionShape2D").disabled = true
+		#card_slot_found.card_in_slot = true
+		##print(card_slot_found.card_in_slot)
+	#else:
+		#player_hand.add_card_to_hand(card_being_dragged)
+		## voltar pra mão
+
 func connect_card_signals(card):
 	card.connect("hovered", on_hovered_over_card)
 	card.connect("hovered_off", on_hovered_off_card)	
@@ -45,7 +71,6 @@ func connect_card_signals(card):
 func on_left_click_released():
 	if card_being_dragged:
 		finish_drag()
-
 	
 func on_hovered_over_card(card):
 	if !is_hovering_on_card:
