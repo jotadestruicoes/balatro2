@@ -6,6 +6,7 @@ signal hovered_off
 var card_type
 var card_tier
 var hand_original_pos
+var current_slot = null
 
 var resource: Resource
 @onready var deck: Node2D = $"../../Deck"

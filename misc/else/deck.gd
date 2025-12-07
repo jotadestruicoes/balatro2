@@ -9,7 +9,7 @@ var player_deck = ["skeleton", "chicken", "sword", "cap"]
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	player_deck.shuffle()
+	#player_deck.shuffle()
 	$RichTextLabel.text = str(player_deck.size())
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
