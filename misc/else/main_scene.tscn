@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://diuo6tplhlwfn"]
+[gd_scene load_steps=12 format=3 uid="uid://diuo6tplhlwfn"]
 
 [ext_resource type="PackedScene" uid="uid://ctjnk36stbbh5" path="res://misc/else/tabledark.tscn" id="1_651ig"]
 [ext_resource type="Script" path="res://misc/else/card_manager.gd" id="2_tnipr"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://cjgiwpv487vj8" path="res://misc/else/armor_slot.tscn" id="8_otp2m"]
 [ext_resource type="Script" path="res://misc/else/card_slot_armor.gd" id="9_ekgsj"]
 [ext_resource type="PackedScene" uid="uid://b8mb4i0ax2dv8" path="res://misc/else/gold.tscn" id="9_hh51q"]
+[ext_resource type="PackedScene" uid="uid://b561nb00p3me5" path="res://misc/else/event_deck.tscn" id="11_5bsx1"]
 
 [node name="MainScene" type="Node2D"]
 
@@ -17,7 +18,6 @@
 position = Vector2(960, 540)
 
 [node name="Tabledark" parent="." instance=ExtResource("1_651ig")]
-z_index = -2
 
 [node name="CardManager" type="Node2D" parent="."]
 script = ExtResource("2_tnipr")
@@ -50,3 +50,8 @@ position = Vector2(960, 540)
 
 [node name="SlotMiddle3" parent="." instance=ExtResource("4_xi0k4")]
 position = Vector2(1119, 540)
+
+[node name="EventDeck" parent="." instance=ExtResource("11_5bsx1")]
+position = Vector2(1756, 540)
+
+[node name="EventCardManager" type="Node2D" parent="."]

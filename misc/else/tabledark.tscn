@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://mhdo3wgnvehb" path="res://assets/tabledark.jpg" id="1_dm76t"]
 
 [node name="Node2D" type="Node2D"]
+z_index = -2
 
 [node name="Tabledark" type="Sprite2D" parent="."]
 position = Vector2(480, 270)

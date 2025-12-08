@@ -24,6 +24,14 @@ window/size/viewport_height=1080
 
 theme/default_font_multichannel_signed_distance_field=true
 
+[layer_names]
+
+2d_physics/layer_1="Card"
+2d_physics/layer_2="Card Slot"
+2d_physics/layer_3="Deck"
+2d_physics/layer_4="Event Deck"
+2d_physics/layer_9="Event Card"
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0

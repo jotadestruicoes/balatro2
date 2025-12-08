@@ -1,0 +1,76 @@
+[gd_scene load_steps=4 format=3 uid="uid://5cajnlheimin"]
+
+[ext_resource type="Texture2D" uid="uid://bwvkp7r3pv80q" path="res://assets/card/event_card.png" id="1_c7dpi"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0ko3g"]
+size = Vector2(120, 156)
+
+[sub_resource type="LabelSettings" id="LabelSettings_brse5"]
+line_spacing = -2.0
+font_size = 10
+
+[node name="EventCard" type="Node2D"]
+z_index = 1
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 256
+collision_mask = 256
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_0ko3g")
+
+[node name="EventCard" type="Sprite2D" parent="."]
+scale = Vector2(3, 3)
+texture = ExtResource("1_c7dpi")
+
+[node name="EventName" type="Label" parent="."]
+modulate = Color(0.133333, 0.133333, 0.133333, 1)
+offset_left = -52.0
+offset_top = -67.0
+offset_right = 53.0
+offset_bottom = -44.0
+text = "EVENT NAME!"
+
+[node name="EventDescription" type="Label" parent="."]
+modulate = Color(0.133333, 0.133333, 0.133333, 1)
+offset_left = -52.0
+offset_top = -40.0
+offset_right = 53.0
+offset_bottom = -2.0
+text = "event description yeeeah long ass description"
+label_settings = SubResource("LabelSettings_brse5")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="EventDescription2" type="Label" parent="."]
+modulate = Color(0.133333, 0.133333, 0.133333, 1)
+offset_left = -52.0
+offset_top = -40.0
+offset_right = 53.0
+offset_bottom = -2.0
+text = "event description yeeeah long ass description"
+label_settings = SubResource("LabelSettings_brse5")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Event" type="Label" parent="."]
+modulate = Color(0.133333, 0.133333, 0.133333, 1)
+offset_left = -50.0
+offset_top = 8.0
+offset_right = 51.0
+offset_bottom = 31.0
+text = "REQUISITES"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label5" type="Label" parent="."]
+modulate = Color(0.133333, 0.133333, 0.133333, 1)
+offset_left = -50.0
+offset_top = 36.0
+offset_right = 51.0
+offset_bottom = 59.0
+text = "REWARDS"
+horizontal_alignment = 1
+vertical_alignment = 1
