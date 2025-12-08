@@ -8,6 +8,6 @@ health = 3
 damage = 1
 attack_speed = 3.0
 monster_type = 0
-name = ""
+name = "Skeleton"
 card_type = 3
 tier = 0

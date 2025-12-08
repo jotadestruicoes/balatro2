@@ -6,6 +6,6 @@
 script = ExtResource("1_coohy")
 defense = 1
 armor_type = 0
-name = ""
+name = "Cap"
 card_type = 1
 tier = 0

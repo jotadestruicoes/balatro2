@@ -6,6 +6,6 @@
 script = ExtResource("1_lb8lm")
 damage = 1
 weapon_type = 1
-name = ""
+name = "Sword"
 card_type = 0
 tier = 0

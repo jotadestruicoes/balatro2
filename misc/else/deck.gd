@@ -9,7 +9,7 @@ var player_deck = ["skeleton", "chicken", "sword", "cap"]
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	#player_deck.shuffle()
+	player_deck.shuffle()
 	$RichTextLabel.text = str(player_deck.size())
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -33,6 +33,10 @@ func draw_card():
 	
 	new_card.card_type = new_card.resource.card_type
 	new_card.card_tier = new_card.resource.tier
+	print(new_card.get_node("Name"))
+	new_card.get_node("Name").text = new_card.resource.name.capitalize()
+	new_card.get_node("Name").horizontal_alignment = 1
+	
 	
 	if new_card.card_type == 3: #IF ITS A MONSTER
 		new_card.get_node("Health").text = str(new_card.resource.health)

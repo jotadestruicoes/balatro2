@@ -31,24 +31,26 @@ func finish_drag():
 	var card_slot_found = raycast_check_for_card_slot() 
 	var slot_of_card = card_being_dragged.current_slot
 	
-	if card_slot_found: #achou um slot
+	if card_slot_found and card_slot_found.card_type_allowed.has(card_being_dragged.card_type): #achou um slot e a carta pode ir nesse slot
 		#print("Slot found")
 		if card_slot_found == slot_of_card: #é o mesmo da carta
 			player_hand.remove_card_from_hand(card_being_dragged)
 			card_being_dragged.position = card_slot_found.position #COLOCA
 			card_slot_found.card_in_slot = true
 			card_being_dragged.current_slot = card_slot_found
-			#print("same slot \n ---------")
 		else: #é outro slot
-			player_hand.remove_card_from_hand(card_being_dragged)
-			card_being_dragged.position = card_slot_found.position #COLOCA
+			if card_slot_found.card_in_slot == false:
+				player_hand.remove_card_from_hand(card_being_dragged)
+				card_being_dragged.position = card_slot_found.position #COLOCA
+				
+				if card_being_dragged.current_slot != null:
+					card_being_dragged.current_slot.card_in_slot = false #libera o slot antigo
 			
-			if card_being_dragged.current_slot != null:
-				card_being_dragged.current_slot.card_in_slot = false #libera o slot antigo
-		
-			card_slot_found.card_in_slot = true
-			card_being_dragged.current_slot = card_slot_found #armazena novo slot
-			#print("new slot \n ---------")
+				card_slot_found.card_in_slot = true
+				card_being_dragged.current_slot = card_slot_found #armazena novo slot
+			else:
+				card_being_dragged.current_slot = null #limpa o armazenamento
+				player_hand.add_card_to_hand(card_being_dragged) #card volta pra mao
 	else: #nao achou um slot
 		player_hand.add_card_to_hand(card_being_dragged) #card volta pra mao
 		#print("Slot not found")
@@ -74,7 +76,6 @@ func connect_card_signals(card):
 	
 func on_left_click_released():
 	var card_under_mouse = raycast_check_for_card()
-	print("[TESTE 2] Carta sob mouse ao soltar:", card_under_mouse)
 	if card_being_dragged:
 		finish_drag()
 	
