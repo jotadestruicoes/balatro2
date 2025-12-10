@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="EventCard" load_steps=2 format=3 uid="uid://dfh2we6a1ra30"]
+
+[ext_resource type="Script" path="res://scripts/event_card_res.gd" id="1_gtn04"]
+
+[resource]
+script = ExtResource("1_gtn04")
+RequisitesAndRewards = {
+"requisites": {
+"cards": [],
+"events": []
+},
+"rewards": {
+"cards": ["g", "g"],
+"events": []
+}
+}
+tier = 0
+name = "Receive two!"
+description = "Hey! You've been gifted two random cards!"

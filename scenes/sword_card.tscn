@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://cj1qbk621d48d"]
 
-[ext_resource type="Script" path="res://misc/weapon/card_instantiator.gd" id="1_8b5g3"]
-[ext_resource type="Resource" uid="uid://bfospr38sr7y6" path="res://misc/resources/sword.tres" id="2_dntmn"]
+[ext_resource type="Script" path="res://scripts/card_instantiator.gd" id="1_8b5g3"]
+[ext_resource type="Resource" uid="uid://bfospr38sr7y6" path="res://resources/sword.tres" id="2_dntmn"]
 [ext_resource type="Texture2D" uid="uid://c5avacou4hsg5" path="res://assets/card/sword.png" id="2_gdpbv"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8ud2v"]

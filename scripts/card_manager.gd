@@ -6,6 +6,7 @@ const COLLISION_MASK_CARD_SLOT = 2
 var card_being_dragged
 var screen_size
 var is_hovering_on_card
+
 @onready var player_hand: Node2D = $"../PlayerHand"
 @onready var input_manager: Node2D = $"../InputManager"
 

@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="ArmorCard" load_steps=2 format=3 uid="uid://dppbabje3qhvj"]
 
-[ext_resource type="Script" path="res://misc/weapon/armor_card_res.gd" id="1_coohy"]
+[ext_resource type="Script" path="res://scripts/armor_card_res.gd" id="1_coohy"]
 
 [resource]
 script = ExtResource("1_coohy")

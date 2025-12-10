@@ -1,7 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://d2sxrqlukapd8"]
+[gd_scene load_steps=6 format=3 uid="uid://bpbqip4lpu2c3"]
 
-[ext_resource type="Script" path="res://misc/card/Card.gd" id="1_5rrjn"]
-[ext_resource type="Texture2D" uid="uid://dpvuvvidi2fuc" path="res://assets/genericcard.png" id="2_ha7eb"]
+[ext_resource type="Script" path="res://scripts/Card.gd" id="1_8oaic"]
+[ext_resource type="Texture2D" uid="uid://dpvuvvidi2fuc" path="res://assets/genericcard.png" id="2_s2jg6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bttkx"]
 size = Vector2(120, 156)
@@ -14,7 +14,7 @@ font = SubResource("SystemFont_52fio")
 
 [node name="Card" type="Node2D"]
 z_index = 1
-script = ExtResource("1_5rrjn")
+script = ExtResource("1_8oaic")
 
 [node name="Area2D" type="Area2D" parent="."]
 
@@ -25,7 +25,7 @@ shape = SubResource("RectangleShape2D_bttkx")
 [node name="CardSprite" type="Sprite2D" parent="."]
 position = Vector2(0, -1)
 scale = Vector2(3, 3)
-texture = ExtResource("2_ha7eb")
+texture = ExtResource("2_s2jg6")
 
 [node name="Attack" type="RichTextLabel" parent="."]
 modulate = Color(0.133333, 0.133333, 0.133333, 1)

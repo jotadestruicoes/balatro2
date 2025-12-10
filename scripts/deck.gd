@@ -22,14 +22,14 @@ func draw_card():
 		$Area2D/CollisionShape2D.disabled = true
 		$RichTextLabel.visible = false
 	
-	var card_scene = preload("res://misc/card/Card.tscn")
+	var card_scene = preload("res://scenes/Card.tscn")
 	$RichTextLabel.text = str(player_deck.size())
 	
 	var new_card = card_scene.instantiate()
 	
 	new_card.position = self.position
 	new_card.get_node("CardSprite").texture = load("res://assets/card/"+ card_drawn +".png")
-	new_card.resource = load("res://misc/resources/"+card_drawn+".tres")
+	new_card.resource = load("res://resources/"+card_drawn+".tres")
 	
 	new_card.card_type = new_card.resource.card_type
 	new_card.card_tier = new_card.resource.tier

@@ -6,10 +6,12 @@ signal left_mouse_button_released
 const COLLISION_MASK_CARD = 1
 const COLLISION_MASK_DECK = 4
 const COLLISION_MASK_EVENT_DECK = 8
+const COLLISION_MASK_EVENT_CARD = 16
 
 @onready var card_manager: Node2D = $"../CardManager"
 @onready var deck: Node2D = $"../Deck"
 @onready var event_deck: Node2D = $"../EventDeck"
+@onready var event_card_manager: Node2D = $"../EventCardManager"
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
@@ -46,6 +48,13 @@ func raycast_at_cursor():
 			
 		elif layer == COLLISION_MASK_EVENT_DECK:
 			event_deck.draw_event_card()
+			return
+			
+		#elif layer == COLLISION_MASK_EVENT_CARD:
+			#var event_card_found = collider.get_parent()
+			#if event_card_found:
+				#event_card_manager.start_event(event_card_found)
+			return  # já encontrou uma carta, não precisa continuar
 
 
 #func raycast_at_cursor():

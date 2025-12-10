@@ -1,0 +1,59 @@
+[gd_scene load_steps=13 format=3 uid="uid://diuo6tplhlwfn"]
+
+[ext_resource type="PackedScene" uid="uid://ctjnk36stbbh5" path="res://scenes/tabledark.tscn" id="1_xekhy"]
+[ext_resource type="Script" path="res://scripts/card_manager.gd" id="2_cmje1"]
+[ext_resource type="Script" path="res://scripts/player_hand.gd" id="3_jvpbs"]
+[ext_resource type="PackedScene" uid="uid://cqxn6767vob5b" path="res://scenes/deck.tscn" id="4_h2bbw"]
+[ext_resource type="Script" path="res://scripts/input_manager.gd" id="5_shxtj"]
+[ext_resource type="PackedScene" uid="uid://yli63mx0h43d" path="res://scenes/card_slot.tscn" id="6_ssbln"]
+[ext_resource type="PackedScene" uid="uid://vvvaxhpha2a5" path="res://scenes/weapon_slot.tscn" id="7_xxnxd"]
+[ext_resource type="PackedScene" uid="uid://cjgiwpv487vj8" path="res://scenes/armor_slot.tscn" id="8_dtkdi"]
+[ext_resource type="Script" path="res://scripts/card_slot_armor.gd" id="9_tgejs"]
+[ext_resource type="PackedScene" uid="uid://b8mb4i0ax2dv8" path="res://scenes/gold.tscn" id="10_42c7m"]
+[ext_resource type="PackedScene" uid="uid://b561nb00p3me5" path="res://scenes/event_deck.tscn" id="11_ildph"]
+[ext_resource type="Script" path="res://scenes/event_card_manager.gd" id="12_xi107"]
+
+[node name="MainScene" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(960, 540)
+
+[node name="Tabledark" parent="." instance=ExtResource("1_xekhy")]
+
+[node name="CardManager" type="Node2D" parent="."]
+script = ExtResource("2_cmje1")
+
+[node name="PlayerHand" type="Node2D" parent="."]
+script = ExtResource("3_jvpbs")
+
+[node name="Deck" parent="." instance=ExtResource("4_h2bbw")]
+z_index = 1
+position = Vector2(150, 890)
+
+[node name="InputManager" type="Node2D" parent="."]
+script = ExtResource("5_shxtj")
+
+[node name="SlotMiddle" parent="." instance=ExtResource("6_ssbln")]
+position = Vector2(800, 540)
+
+[node name="CardSlotWeapon" parent="." instance=ExtResource("7_xxnxd")]
+position = Vector2(150, 677)
+
+[node name="CardSlotArmor" parent="." instance=ExtResource("8_dtkdi")]
+position = Vector2(310, 677)
+script = ExtResource("9_tgejs")
+
+[node name="Gold" parent="." instance=ExtResource("10_42c7m")]
+position = Vector2(1757, 881)
+
+[node name="SlotMiddle2" parent="." instance=ExtResource("6_ssbln")]
+position = Vector2(960, 540)
+
+[node name="SlotMiddle3" parent="." instance=ExtResource("6_ssbln")]
+position = Vector2(1119, 540)
+
+[node name="EventDeck" parent="." instance=ExtResource("11_ildph")]
+position = Vector2(1756, 540)
+
+[node name="EventCardManager" type="Node2D" parent="."]
+script = ExtResource("12_xi107")
