@@ -7,11 +7,13 @@ const COLLISION_MASK_CARD = 1
 const COLLISION_MASK_DECK = 4
 const COLLISION_MASK_EVENT_DECK = 8
 const COLLISION_MASK_EVENT_CARD = 16
+const COLLISION_MASK_CONTROL = 32
 
 @onready var card_manager: Node2D = $"../CardManager"
 @onready var deck: Node2D = $"../Deck"
 @onready var event_deck: Node2D = $"../EventDeck"
 @onready var event_card_manager: Node2D = $"../EventCardManager"
+@onready var control: Control = $"../Control"
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
@@ -49,6 +51,13 @@ func raycast_at_cursor():
 		elif layer == COLLISION_MASK_EVENT_DECK:
 			event_deck.draw_event_card()
 			return
+			
+		elif layer == COLLISION_MASK_CONTROL:
+			match collider.name:
+				"DoItLabelArea": 
+					control.do_it_button_pressed()
+				_: 
+					printerr("This button does not have any input_manager action yet: ", collider.name, collider)
 			
 		#elif layer == COLLISION_MASK_EVENT_CARD:
 			#var event_card_found = collider.get_parent()

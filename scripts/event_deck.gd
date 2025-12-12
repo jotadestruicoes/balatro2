@@ -28,20 +28,6 @@ func draw_event_card():
 	event_card_manager.start_event(new_card)
 	
 	
-	#if new_card.resource.requisites.size() != 0:
-		#for i in new_card.resource.requisites: #ele ta pegando 'a' em vez de pegar um index de verdade
-			#new_card.get_node("EventRequisites").text = "(" + str(i) + ")"
-			#print(new_card.get_node("EventRequisites").text)
-			#print("(" + str(i) + ")")
-	#else:
-		#new_card.get_node("EventRequisites").text = "—"
-	#if new_card.resource.rewards.size() != 0:
-		#for i in new_card.resource.rewards: #ele ta pegando 'a' em vez de pegar um index de verdade
-			#new_card.get_node("EventRewards").text = "(" + str(i) + ")"
-	#else:
-		#new_card.get_node("EventRewards").text = "—"
-	
-	
 	$"../CardManager".add_child(new_card)
 	
 	update_event_card_position(new_card, Vector2(self.position.x - 170, self.position.y), Vector2(1.4,1.4))
