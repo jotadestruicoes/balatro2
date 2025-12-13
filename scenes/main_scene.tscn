@@ -12,16 +12,16 @@
 [ext_resource type="PackedScene" uid="uid://b8mb4i0ax2dv8" path="res://scenes/gold.tscn" id="10_42c7m"]
 [ext_resource type="PackedScene" uid="uid://b561nb00p3me5" path="res://scenes/event_deck.tscn" id="11_ildph"]
 [ext_resource type="Script" path="res://scripts/event_card_manager.gd" id="12_xi107"]
-[ext_resource type="Script" path="res://scenes/control.gd" id="13_q3rhg"]
+[ext_resource type="Script" path="res://scripts/control.gd" id="13_q3rhg"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_7veck"]
 font_size = 32
 
-[sub_resource type="LabelSettings" id="LabelSettings_j2b8y"]
-font_size = 24
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_85s3g"]
-size = Vector2(91, 42)
+size = Vector2(86, 42)
+
+[sub_resource type="LabelSettings" id="LabelSettings_mgmfn"]
+font_size = 24
 
 [node name="MainScene" type="Node2D"]
 
@@ -36,6 +36,24 @@ script = ExtResource("2_cmje1")
 [node name="PlayerHand" type="Node2D" parent="."]
 script = ExtResource("3_jvpbs")
 
+[node name="SlotManager" type="Node2D" parent="."]
+
+[node name="SlotMiddle1" parent="SlotManager" instance=ExtResource("6_ssbln")]
+position = Vector2(800, 540)
+
+[node name="SlotMiddle2" parent="SlotManager" instance=ExtResource("6_ssbln")]
+position = Vector2(960, 540)
+
+[node name="SlotMiddle3" parent="SlotManager" instance=ExtResource("6_ssbln")]
+position = Vector2(1119, 540)
+
+[node name="CardSlotWeapon" parent="SlotManager" instance=ExtResource("7_xxnxd")]
+position = Vector2(150, 677)
+
+[node name="CardSlotArmor" parent="SlotManager" instance=ExtResource("8_dtkdi")]
+position = Vector2(310, 677)
+script = ExtResource("9_tgejs")
+
 [node name="Deck" parent="." instance=ExtResource("4_h2bbw")]
 z_index = 1
 position = Vector2(150, 890)
@@ -43,24 +61,8 @@ position = Vector2(150, 890)
 [node name="InputManager" type="Node2D" parent="."]
 script = ExtResource("5_shxtj")
 
-[node name="SlotMiddle" parent="." instance=ExtResource("6_ssbln")]
-position = Vector2(800, 540)
-
-[node name="CardSlotWeapon" parent="." instance=ExtResource("7_xxnxd")]
-position = Vector2(150, 677)
-
-[node name="CardSlotArmor" parent="." instance=ExtResource("8_dtkdi")]
-position = Vector2(310, 677)
-script = ExtResource("9_tgejs")
-
 [node name="Gold" parent="." instance=ExtResource("10_42c7m")]
 position = Vector2(1757, 881)
-
-[node name="SlotMiddle2" parent="." instance=ExtResource("6_ssbln")]
-position = Vector2(960, 540)
-
-[node name="SlotMiddle3" parent="." instance=ExtResource("6_ssbln")]
-position = Vector2(1119, 540)
 
 [node name="EventDeck" parent="." instance=ExtResource("11_ildph")]
 position = Vector2(1756, 540)
@@ -77,33 +79,35 @@ script = ExtResource("13_q3rhg")
 
 [node name="DoIt" type="Label" parent="Control"]
 layout_mode = 0
-offset_left = 913.0
-offset_top = 350.0
-offset_right = 1005.0
-offset_bottom = 395.0
+offset_left = 917.0
+offset_top = 348.0
+offset_right = 1007.0
+offset_bottom = 393.0
 pivot_offset = Vector2(45, 23)
 text = "Do it. "
 label_settings = SubResource("LabelSettings_7veck")
 
+[node name="DoItLabelArea" type="Area2D" parent="Control/DoIt"]
+position = Vector2(-913, -374)
+collision_layer = 32
+collision_mask = 32
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Control/DoIt/DoItLabelArea"]
+position = Vector2(955, 397)
+shape = SubResource("RectangleShape2D_85s3g")
+
 [node name="Errors" type="Label" parent="Control"]
-modulate = Color(1, 1, 1, 0)
 layout_mode = 0
 offset_left = 745.0
 offset_top = 402.0
 offset_right = 1174.0
 offset_bottom = 436.0
+theme_override_colors/font_color = Color(0.445002, 0.193703, 0.220807, 1)
+theme_override_colors/font_shadow_color = Color(0.839216, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0.741176, 0, 0, 1)
 text = "Insert any error here!"
-label_settings = SubResource("LabelSettings_j2b8y")
+label_settings = SubResource("LabelSettings_mgmfn")
 horizontal_alignment = 1
 
-[node name="DoItLabelArea" type="Area2D" parent="Control"]
-position = Vector2(0, -24)
-collision_layer = 32
-collision_mask = 32
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Control/DoItLabelArea"]
-position = Vector2(957.5, 397)
-shape = SubResource("RectangleShape2D_85s3g")
-
-[connection signal="mouse_entered" from="Control/DoItLabelArea" to="Control" method="_on_label_mouse_entered"]
-[connection signal="mouse_exited" from="Control/DoItLabelArea" to="Control" method="_on_label_mouse_exited"]
+[connection signal="mouse_entered" from="Control/DoIt/DoItLabelArea" to="Control" method="_on_label_mouse_entered"]
+[connection signal="mouse_exited" from="Control/DoIt/DoItLabelArea" to="Control" method="_on_label_mouse_exited"]

@@ -64,22 +64,3 @@ func raycast_at_cursor():
 			#if event_card_found:
 				#event_card_manager.start_event(event_card_found)
 			return  # já encontrou uma carta, não precisa continuar
-
-
-#func raycast_at_cursor():
-	#var space_state = get_world_2d().direct_space_state
-	#var parameters = PhysicsPointQueryParameters2D.new()
-	#parameters.position = get_global_mouse_position()
-	#parameters.collide_with_areas = true
-	#var result = space_state.intersect_point(parameters)
-	#if result.size() > 0:
-		#print(result)
-		#var result_collision_mask = result[0].collider.collision_mask
-		#if result_collision_mask == COLLISION_MASK_CARD:
-			##deck clicked
-			#var card_found = result[0].collider.get_parent()
-			#if card_found:
-				#card_manager.start_drag(card_found)
-		#elif result_collision_mask == COLLISION_MASK_DECK:
-			##deck clicked
-			#deck.draw_card()

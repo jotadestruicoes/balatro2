@@ -22,14 +22,13 @@ func _process(_delta: float) -> void:
 		card_being_dragged.position = Vector2(clamp(mouse_pos.x, 0, screen_size.x), clamp(mouse_pos.y, 0, screen_size.y))
 
 func start_drag(card):
-	#print(card_slot_found.card_in_slot)
-	print("START DRAG CALLED:")
+	#print(card_slot_found.has_card)
 	card_being_dragged = card
 	card.scale = Vector2(1,1)
 	
 func finish_drag():
 	card_being_dragged.scale = Vector2(1.05, 1.05)
-	var card_slot_found = raycast_check_for_card_slot() 
+	var card_slot_found = raycast_check_for_card_slot()
 	var slot_of_card = card_being_dragged.current_slot
 	
 	if card_slot_found and card_slot_found.card_type_allowed.has(card_being_dragged.card_type): #achou um slot e a carta pode ir nesse slot
@@ -37,17 +36,20 @@ func finish_drag():
 		if card_slot_found == slot_of_card: #é o mesmo da carta
 			player_hand.remove_card_from_hand(card_being_dragged)
 			card_being_dragged.position = card_slot_found.position #COLOCA
-			card_slot_found.card_in_slot = true
+			card_slot_found.has_card = true
 			card_being_dragged.current_slot = card_slot_found
 		else: #é outro slot
-			if card_slot_found.card_in_slot == false:
+			if card_slot_found.has_card == false:
 				player_hand.remove_card_from_hand(card_being_dragged)
 				card_being_dragged.position = card_slot_found.position #COLOCA
 				
+				card_slot_found.card_in_slot = card_being_dragged
+				
 				if card_being_dragged.current_slot != null:
-					card_being_dragged.current_slot.card_in_slot = false #libera o slot antigo
+					card_being_dragged.current_slot.has_card = false #libera o slot antigo
+					card_being_dragged.current_slot.card_in_slot = null
 			
-				card_slot_found.card_in_slot = true
+				card_slot_found.has_card = true
 				card_being_dragged.current_slot = card_slot_found #armazena novo slot
 			else:
 				card_being_dragged.current_slot = null #limpa o armazenamento
@@ -57,13 +59,14 @@ func finish_drag():
 		#print("Slot not found")
 		
 		if card_being_dragged.current_slot != null: #se tinha algum slot armazenado
-			card_being_dragged.current_slot.card_in_slot = false #libera o slot antigo
+			card_being_dragged.current_slot.has_card = false #libera o slot antigo
+			card_being_dragged.current_slot.card_in_slot = null
 			card_being_dragged.current_slot = null #limpa o armazenamento
 #
-	#if card_slot_found and not card_slot_found.card_in_slot and card_slot_found.card_type_allowed.find(card_being_dragged.card_type) != -1:
+	#if card_slot_found and not card_slot_found.has_card and card_slot_found.card_type_allowed.find(card_being_dragged.card_type) != -1:
 		#player_hand.remove_card_from_hand(card_being_dragged)
 		#card_being_dragged.position = card_slot_found.position
-		#card_slot_found.card_in_slot = true
+		#card_slot_found.has_card = true
 		#card_being_dragged.current_slot = card_slot_found
 		#print(card_being_dragged.current_slot)
 	#else:
@@ -76,7 +79,6 @@ func connect_card_signals(card):
 	card.connect("hovered_off", on_hovered_off_card)	
 	
 func on_left_click_released():
-	var card_under_mouse = raycast_check_for_card()
 	if card_being_dragged:
 		finish_drag()
 	

@@ -13,7 +13,7 @@ func draw_event_card():
 	event_deck.shuffle()
 	
 	var event_card_drawn = event_deck[0]
-	var sprite_of_drawn_card = event_card_drawn
+	
 	
 	#if event_deck.size() == 0: #EVENT DECK WILL NEVER BE EMPTY
 		#$Area2D/CollisionShape2D.disabled = true
@@ -26,7 +26,6 @@ func draw_event_card():
 	new_card.get_node("EventName").text = new_card.resource.name
 	new_card.get_node("EventDescription").text = new_card.resource.description
 	event_card_manager.start_event(new_card)
-	
 	
 	$"../CardManager".add_child(new_card)
 	
