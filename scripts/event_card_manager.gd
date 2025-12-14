@@ -7,6 +7,8 @@ var event_card_global
 @onready var slot_manager: Node2D = $"../SlotManager"
 @onready var control: Control = $"../Control"
 @onready var card_manager: Node2D = $"../CardManager"
+@onready var deck: Node2D = $"../Deck"
+const CARD = preload("res://scenes/Card.tscn")
 
 func start_event(event_card):
 	event_card_global = event_card
@@ -49,7 +51,7 @@ func get_event_rewards_events(event_card):
 	else: 
 		return []
 
-func event_requisites_write(event_card):
+func event_requisites_write(event_card): #WRITE REQUISITES ON CARD
 	
 	var erc = get_event_requisites_cards(event_card)
 	var ere = get_event_requisites_events(event_card)  
@@ -64,17 +66,8 @@ func event_requisites_write(event_card):
 		event_card.get_node("EventRewards").text += card
 	for card in ere2:
 		event_card.get_node("EventRewards").text += card
-	#
-	#if event_card.resource.RequisitesAndRewards["requisites"]["cards"].size() != 0 or event_card.resource.RequisitesAndRewards["requisites"]["events"].size() != 0:
-		#for i in event_card.resource.RequisitesAndRewards["requisites"]["cards"]:
-			#event_card.get_node("EventRequisites").text += " (" + i + ") "
-		#for j in event_card.resource.RequisitesAndRewards["requisites"]["events"]:
-			#event_card.get_node("EventRequisites").text += " (" + j + ") "
-#
-	#else:
-		#event_rewards_write(event_card)
 
-func event_rewards_write(event_card):
+func event_rewards_write(event_card): #WRITE REWARDS ON CARD
 	var reqsandrew = event_card.resource.RequisitesAndRewards
 	
 	if reqsandrew["rewards"]["cards"].size() != 0 or reqsandrew["rewards"]["events"].size() != 0:
@@ -101,10 +94,15 @@ func event_req_card_check():
 	var j := 1
 	
 	if event_card_global != null: #IS THERE AN EVENT?
-		for i in event_card_global.resource.RequisitesAndRewards["requisites"]["cards"]: 
+		for i in get_event_requisites_cards(event_card_global): 
 			#adding all reqs to a list
 			requirements.append(i)
 			
+		if requirements.is_empty():
+			event_rew_card_give()
+			print("requirements empty")
+			return 0
+		
 		for i in requirements: #for every requirement check a slot and notes the card to be taken
 			if slot_manager.get_node("SlotMiddle" + str(requirements.bsearch(i) + j)).card_in_slot != null:
 				#has a card in the j slot
@@ -116,19 +114,12 @@ func event_req_card_check():
 				control.error_message("Event requirements not met!")
 				return 0
 			
-		for card in array_of_cards_to_destroy:
-			card.queue_free()
-		for slot in array_of_slots_to_free:
-			slot.has_card = false
-			slot.card_in_slot = null
-		slot_manager.get_node("SlotMiddle1").has_card = false
-		slot_manager.get_node("SlotMiddle2").has_card = false
+		erase_cards(array_of_cards_to_destroy, array_of_slots_to_free)
 			
-		if array_of_cards_to_destroy.size() == 0:
-			event_rew_card_give()
 			
 		var tween = get_tree().create_tween()
 		tween.tween_property(event_card_global, "scale", Vector2(0.0,0.0), 1.5).set_trans(Tween.TRANS_ELASTIC)
+		
 		
 		control.error_message("Event complete! Congrats!")
 		await tween.finished
@@ -141,5 +132,93 @@ func event_req_card_check():
 		control.error_message("No event active at this moment!")
 		return -1
 
-func event_rew_card_give():
-	pass
+func erase_cards(array_of_cards_to_destroy, array_of_slots_to_free):
+	for card in array_of_cards_to_destroy:
+		var tween = get_tree().create_tween()
+		tween.tween_property(card, "scale", Vector2(0.0,0.0), 1.5).set_trans(Tween.TRANS_ELASTIC)
+		await tween.finished #HERE IS THE ERROR ON WHY CARDS DONT ERASE IMEDIATELY
+		card.queue_free()
+		
+	for slot in array_of_slots_to_free:
+		slot.has_card = false
+		slot.card_in_slot = null
+	slot_manager.get_node("SlotMiddle1").has_card = false
+	slot_manager.get_node("SlotMiddle2").has_card = false
+
+
+
+func event_rew_card_give() -> void:
+	var rewards: PackedStringArray = []
+	
+	# 1. Coletar todas as cartas recompensa
+	for card_name in event_card_global.resource.RequisitesAndRewards["rewards"]["cards"]:
+		rewards.append(card_name)
+
+	if rewards.is_empty():
+		return # nada a fazer
+
+	var free_slots: Array[StringName] = []
+	var slot_number := 1
+
+	# 2. Verificar se há slots livres suficientes
+	for reward in rewards:
+		var slot_path := "SlotMiddle" + str(slot_number)
+		var slot = slot_manager.get_node(slot_path)
+
+		if slot.card_in_slot == null:
+			free_slots.append(slot_path)
+			slot_number += 1
+		else:
+			control.error_message("Free up the slots, take your cards!")
+			return
+
+	# 3. Se há slots suficientes, entregar as cartas
+	for index in range(rewards.size()):
+		var slot_path = free_slots[index]
+		var slot = slot_manager.get_node(str(slot_path))
+		var pos = slot.position
+		var card_name = rewards[index]
+
+		deck.receive_card(card_name, pos)
+	
+	control.get_node("DoIt/DoItLabelArea/CollisionShape2D").disabled = true
+	var tween = get_tree().create_tween()
+	tween.tween_property(event_card_global, "scale", Vector2(0.0,0.0), 1.5).set_trans(Tween.TRANS_ELASTIC)
+	
+	control.error_message("Event complete! Congrats!")
+	await tween.finished
+	event_card_global.queue_free()
+	unlock_current_event()
+
+#func event_rew_card_give():
+	#var rewards: PackedStringArray = []
+	#var slot_number := 1
+	#
+	#
+	#for i in event_card_global.resource.RequisitesAndRewards["rewards"]["cards"]: 
+		##adding all reqs to a list
+		#rewards.append(i)
+	#
+	#var all_slots_free: PackedStringArray = []
+	#
+	#
+	#
+	#for i in rewards:
+		#if slot_manager.get_node("SlotMiddle" + str(rewards.bsearch(i) + slot_number)).card_in_slot == null:
+			#all_slots_free.append(("SlotMiddle" + str(rewards.bsearch(i) + slot_number)))
+			#print("allslots: ", all_slots_free)
+			#slot_number += 1
+		#else:
+		##does not have card
+			#control.error_message("Free up the slots, take your cards!")
+			#return 0
+	#if all_slots_free.size() == rewards.size():
+		#var slot_index := 0
+		#for i in all_slots_free: #for every reward check if the slot is empty
+			##slot_number slot is free
+			#var pos = slot_manager.get_node(all_slots_free[slot_index]).position
+			#deck.receive_card(i, pos)
+			#slot_index += 1
+			
+			
+	

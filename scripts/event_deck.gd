@@ -1,10 +1,11 @@
 extends Node2D
 
-var event_deck = ["give2cards", "give1cards", "receive2cards"]
+var event_deck = ["receive2cards", "give2cards", "give1cards"]
 
 @onready var player_hand: Node2D = $"../PlayerHand"
 @onready var card_manager: Node2D = $"../CardManager"
 @onready var event_card_manager: Node2D = $"../EventCardManager"
+@onready var control: Control = $"../Control"
 
 func _ready() -> void:
 	pass
@@ -37,5 +38,9 @@ func update_event_card_position(event_card, new_position, new_scale):
 	tween.tween_property(event_card, "position", new_position, 0.2)
 	var tween2 = get_tree().create_tween()
 	tween2.tween_property(event_card, "scale", new_scale, 0.2)
+	
+	await tween.finished
+	control.get_node("DoIt/DoItLabelArea/CollisionShape2D").disabled = false
+
 	
 	
