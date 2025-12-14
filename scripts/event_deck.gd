@@ -11,7 +11,7 @@ func _ready() -> void:
 	pass
 	
 func draw_event_card():
-	event_deck.shuffle()
+	#event_deck.shuffle()
 	
 	var event_card_drawn = event_deck[0]
 	

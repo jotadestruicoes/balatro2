@@ -22,7 +22,6 @@ func _process(_delta: float) -> void:
 		card_being_dragged.position = Vector2(clamp(mouse_pos.x, 0, screen_size.x), clamp(mouse_pos.y, 0, screen_size.y))
 
 func start_drag(card):
-	#print(card_slot_found.has_card)
 	card_being_dragged = card
 	card.scale = Vector2(1,1)
 	
@@ -32,7 +31,6 @@ func finish_drag():
 	var slot_of_card = card_being_dragged.current_slot
 	
 	if card_slot_found and card_slot_found.card_type_allowed.has(card_being_dragged.card_type): #achou um slot e a carta pode ir nesse slot
-		#print("Slot found")
 		if card_slot_found == slot_of_card: #é o mesmo da carta
 			player_hand.remove_card_from_hand(card_being_dragged)
 			card_being_dragged.position = card_slot_found.position #COLOCA
@@ -56,22 +54,13 @@ func finish_drag():
 				player_hand.add_card_to_hand(card_being_dragged) #card volta pra mao
 	else: #nao achou um slot
 		player_hand.add_card_to_hand(card_being_dragged) #card volta pra mao
-		#print("Slot not found")
 		
 		if card_being_dragged.current_slot != null: #se tinha algum slot armazenado
 			card_being_dragged.current_slot.has_card = false #libera o slot antigo
 			card_being_dragged.current_slot.card_in_slot = null
 			card_being_dragged.current_slot = null #limpa o armazenamento
 #
-	#if card_slot_found and not card_slot_found.has_card and card_slot_found.card_type_allowed.find(card_being_dragged.card_type) != -1:
-		#player_hand.remove_card_from_hand(card_being_dragged)
-		#card_being_dragged.position = card_slot_found.position
-		#card_slot_found.has_card = true
-		#card_being_dragged.current_slot = card_slot_found
-		#print(card_being_dragged.current_slot)
-	#else:
-		#player_hand.add_card_to_hand(card_being_dragged)
-	
+
 	card_being_dragged = null
 
 func connect_card_signals(card):
@@ -88,7 +77,6 @@ func on_hovered_over_card(card):
 		highlight_card(card, true)
 		
 func on_hovered_off_card(card):
-	#print("what card is being dragged?", card_being_dragged)
 	if !card_being_dragged:
 		highlight_card(card, false)
 		var new_card_hovered = raycast_check_for_card()
@@ -113,7 +101,6 @@ func raycast_check_for_card_slot():
 	parameters.collision_mask = COLLISION_MASK_CARD_SLOT 
 	var result = space_state.intersect_point(parameters)
 	if result.size() > 0:
-		#print(result[0].collider.get_parent())
 		return result[0].collider.get_parent()
 		#return get_card_with_highest_z_index(result)
 	return null
@@ -127,7 +114,6 @@ func raycast_check_for_card():
 	var result = space_state.intersect_point(parameters)
 	if result.size() > 0:
 		#return result[0].collider.get_parent()
-		#print("card with high z:" , get_card_with_highest_z_index(result))
 		return get_card_with_highest_z_index(result)
 	return null
 	

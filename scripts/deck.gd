@@ -33,7 +33,6 @@ func draw_card():
 	
 	new_card.card_type = new_card.resource.card_type
 	new_card.card_tier = new_card.resource.tier
-	print(new_card.get_node("Name"))
 	new_card.get_node("Name").text = new_card.resource.name.capitalize()
 	new_card.get_node("Name").horizontal_alignment = 1
 	
@@ -59,17 +58,13 @@ func receive_card(card_type, slot_pos):
 			
 			for i in CardDictionary.card_dictionary: #armor, etc
 				var index := 0
-				print("i: ", i)
 				for j in CardDictionary.card_dictionary[i]:
-					print(index)
 					card_dictionary.append(CardDictionary.card_dictionary[i][index -1]) 
 					index += 1
 			
-			print(card_dictionary.size())
 			var rng = RandomNumberGenerator.new()
 			var random_index = rng.randi_range(0, card_dictionary.size() - 1)
 			random_card = card_dictionary[random_index]
-			print(random_card)
 			
 			var new_card = card_scene.instantiate()
 

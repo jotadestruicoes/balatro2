@@ -114,10 +114,10 @@ func event_req_card_check():
 				control.error_message("Event requirements not met!")
 				return 0
 			
-		erase_cards(array_of_cards_to_destroy, array_of_slots_to_free)
+		animate_cards(array_of_cards_to_destroy, array_of_slots_to_free)
 			
 			
-		var tween = get_tree().create_tween()
+		var tween = get_tree().create_tween() #animate event card
 		tween.tween_property(event_card_global, "scale", Vector2(0.0,0.0), 1.5).set_trans(Tween.TRANS_ELASTIC)
 		
 		
@@ -132,12 +132,11 @@ func event_req_card_check():
 		control.error_message("No event active at this moment!")
 		return -1
 
-func erase_cards(array_of_cards_to_destroy, array_of_slots_to_free):
+func animate_cards(array_of_cards_to_destroy, array_of_slots_to_free):
 	for card in array_of_cards_to_destroy:
 		var tween = get_tree().create_tween()
 		tween.tween_property(card, "scale", Vector2(0.0,0.0), 1.5).set_trans(Tween.TRANS_ELASTIC)
-		await tween.finished #HERE IS THE ERROR ON WHY CARDS DONT ERASE IMEDIATELY
-		card.queue_free()
+		erase_card(card, tween)
 		
 	for slot in array_of_slots_to_free:
 		slot.has_card = false
@@ -145,80 +144,51 @@ func erase_cards(array_of_cards_to_destroy, array_of_slots_to_free):
 	slot_manager.get_node("SlotMiddle1").has_card = false
 	slot_manager.get_node("SlotMiddle2").has_card = false
 
-
+func erase_card(card, tween):
+	await tween.finished 
+	card.queue_free()
 
 func event_rew_card_give() -> void:
 	var rewards: PackedStringArray = []
 	
 	# 1. Coletar todas as cartas recompensa
 	for card_name in event_card_global.resource.RequisitesAndRewards["rewards"]["cards"]:
-		rewards.append(card_name)
+		rewards.append(card_name) #QUANTAS CARTAS PRECISA-SE ENTREGAR
 
 	if rewards.is_empty():
 		return # nada a fazer
 
-	var free_slots: Array[StringName] = []
-	var slot_number := 1
+	var free_slots: Array[StringName] = [] #QUANTOS SLOTS LIVRES TEMOS PARA ENTREGAR
+	var slot_number := 1 #SLOT1, SLOT 2 E SLOT 3
+	var max_slots := 3 #HOW MANY SLOTS DO WE HAVE - HAS TO BE UPDATED IF WE ADD MORE
 
-	# 2. Verificar se há slots livres suficientes
-	for reward in rewards:
+	for i in max_slots: #CONTANDO SLOTS LIVRES
 		var slot_path := "SlotMiddle" + str(slot_number)
 		var slot = slot_manager.get_node(slot_path)
-
+		
 		if slot.card_in_slot == null:
 			free_slots.append(slot_path)
-			slot_number += 1
-		else:
-			control.error_message("Free up the slots, take your cards!")
-			return
-
+			
+		slot_number += 1
+		
 	# 3. Se há slots suficientes, entregar as cartas
-	for index in range(rewards.size()):
-		var slot_path = free_slots[index]
-		var slot = slot_manager.get_node(str(slot_path))
-		var pos = slot.position
-		var card_name = rewards[index]
+	if free_slots.size() >= rewards.size():
+		for index in range(rewards.size()):
+			var slot_path = free_slots[index]
+			var slot = slot_manager.get_node(str(slot_path))
+			var pos = slot.position
+			var card_name = rewards[index]
 
-		deck.receive_card(card_name, pos)
-	
-	control.get_node("DoIt/DoItLabelArea/CollisionShape2D").disabled = true
-	var tween = get_tree().create_tween()
-	tween.tween_property(event_card_global, "scale", Vector2(0.0,0.0), 1.5).set_trans(Tween.TRANS_ELASTIC)
-	
-	control.error_message("Event complete! Congrats!")
-	await tween.finished
-	event_card_global.queue_free()
-	unlock_current_event()
-
-#func event_rew_card_give():
-	#var rewards: PackedStringArray = []
-	#var slot_number := 1
-	#
-	#
-	#for i in event_card_global.resource.RequisitesAndRewards["rewards"]["cards"]: 
-		##adding all reqs to a list
-		#rewards.append(i)
-	#
-	#var all_slots_free: PackedStringArray = []
-	#
-	#
-	#
-	#for i in rewards:
-		#if slot_manager.get_node("SlotMiddle" + str(rewards.bsearch(i) + slot_number)).card_in_slot == null:
-			#all_slots_free.append(("SlotMiddle" + str(rewards.bsearch(i) + slot_number)))
-			#print("allslots: ", all_slots_free)
-			#slot_number += 1
-		#else:
-		##does not have card
-			#control.error_message("Free up the slots, take your cards!")
-			#return 0
-	#if all_slots_free.size() == rewards.size():
-		#var slot_index := 0
-		#for i in all_slots_free: #for every reward check if the slot is empty
-			##slot_number slot is free
-			#var pos = slot_manager.get_node(all_slots_free[slot_index]).position
-			#deck.receive_card(i, pos)
-			#slot_index += 1
-			
-			
-	
+			deck.receive_card(card_name, pos)
+		
+		control.get_node("DoIt/DoItLabelArea/CollisionShape2D").disabled = true
+		var tween = get_tree().create_tween()
+		tween.tween_property(event_card_global, "scale", Vector2(0.0,0.0), 1.5).set_trans(Tween.TRANS_ELASTIC)
+		
+		control.error_message("Event complete! Congrats!")
+		await tween.finished
+		event_card_global.queue_free()
+		unlock_current_event()
+	else:
+		control.error_message("Free up the slots, take your cards!")
+		return
