@@ -11,14 +11,10 @@ func _ready() -> void:
 	pass
 	
 func draw_event_card():
-	#event_deck.shuffle()
+	event_deck.shuffle()
 	
 	var event_card_drawn = event_deck[0]
 	
-	
-	#if event_deck.size() == 0: #EVENT DECK WILL NEVER BE EMPTY
-		#$Area2D/CollisionShape2D.disabled = true
-		#$RichTextLabel.visible = false
 	
 	var event_card_scene = preload("res://scenes/event_card.tscn")
 	var new_card = event_card_scene.instantiate() #CREATING EVENT CARD

@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://diuo6tplhlwfn"]
+[gd_scene load_steps=21 format=3 uid="uid://diuo6tplhlwfn"]
 
 [ext_resource type="PackedScene" uid="uid://ctjnk36stbbh5" path="res://scenes/tabledark.tscn" id="1_xekhy"]
 [ext_resource type="Script" path="res://scripts/card_manager.gd" id="2_cmje1"]
@@ -22,6 +22,18 @@ size = Vector2(86, 42)
 
 [sub_resource type="LabelSettings" id="LabelSettings_mgmfn"]
 font_size = 24
+
+[sub_resource type="LabelSettings" id="LabelSettings_pew2w"]
+font_size = 32
+
+[sub_resource type="LabelSettings" id="LabelSettings_fci64"]
+font_size = 60
+
+[sub_resource type="LabelSettings" id="LabelSettings_wmill"]
+font_size = 32
+
+[sub_resource type="LabelSettings" id="LabelSettings_pnxpf"]
+font_size = 42
 
 [node name="MainScene" type="Node2D"]
 
@@ -109,5 +121,59 @@ text = "Insert any error here!"
 label_settings = SubResource("LabelSettings_mgmfn")
 horizontal_alignment = 1
 
+[node name="ScoresVBox" type="VBoxContainer" parent="Control"]
+layout_mode = 1
+offset_left = 80.0
+offset_top = 66.0
+offset_right = 222.0
+offset_bottom = 213.0
+alignment = 2
+
+[node name="CurrentScoreHBox" type="HBoxContainer" parent="Control/ScoresVBox"]
+layout_mode = 2
+
+[node name="CurrentScore" type="Label" parent="Control/ScoresVBox/CurrentScoreHBox"]
+layout_mode = 2
+text = "S: "
+label_settings = SubResource("LabelSettings_pew2w")
+
+[node name="CurrentScoreNUMBER" type="Label" parent="Control/ScoresVBox/CurrentScoreHBox"]
+layout_mode = 2
+text = "420"
+label_settings = SubResource("LabelSettings_fci64")
+
+[node name="HighScoreHBox" type="HBoxContainer" parent="Control/ScoresVBox"]
+layout_mode = 2
+
+[node name="HighScore" type="Label" parent="Control/ScoresVBox/HighScoreHBox"]
+layout_mode = 2
+text = "H: "
+label_settings = SubResource("LabelSettings_wmill")
+
+[node name="HighScoreNUMBER" type="Label" parent="Control/ScoresVBox/HighScoreHBox"]
+layout_mode = 2
+text = "69"
+label_settings = SubResource("LabelSettings_pnxpf")
+
+[node name="ResetHighScore" type="Button" parent="Control"]
+layout_mode = 0
+offset_left = 81.0
+offset_top = 234.0
+offset_right = 222.0
+offset_bottom = 277.0
+text = "RESET H. SCORE"
+
+[node name="ResetGame" type="Button" parent="Control"]
+layout_mode = 0
+offset_left = 1712.0
+offset_top = 83.0
+offset_right = 1820.0
+offset_bottom = 141.0
+theme_override_font_sizes/font_size = 24
+text = "RESET 
+GAME"
+
 [connection signal="mouse_entered" from="Control/DoIt/DoItLabelArea" to="Control" method="_on_label_mouse_entered"]
 [connection signal="mouse_exited" from="Control/DoIt/DoItLabelArea" to="Control" method="_on_label_mouse_exited"]
+[connection signal="pressed" from="Control/ResetHighScore" to="Control" method="_on_reset_high_score_button_pressed"]
+[connection signal="pressed" from="Control/ResetGame" to="Control" method="_on_reset_game_pressed"]

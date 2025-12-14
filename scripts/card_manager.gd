@@ -128,3 +128,7 @@ func get_card_with_highest_z_index(cards):
 			highest_z_index = current_card.z_index
 	
 	return highest_z_card
+
+
+func _on_button_pressed() -> void:
+	pass # Replace with function body.

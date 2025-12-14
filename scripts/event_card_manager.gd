@@ -2,6 +2,7 @@ extends Node2D
 
 var event_active: bool
 var event_card_global 
+var current_score := 0 
 
 @onready var event_deck: Node2D = $"../EventDeck"
 @onready var slot_manager: Node2D = $"../SlotManager"
@@ -85,6 +86,15 @@ func lock_current_event():
 func unlock_current_event():
 	event_active = false #CANNOT HAVE MORE THAN ONE PER TURN
 	event_deck.get_node("Area2D/CollisionShape2D").disabled = false
+	score()
+	
+func score():
+	current_score += 1
+	control.current_score_number.text = str(current_score)
+	
+	if int(control.current_score_number.text) >= int(control.high_score_number.text):
+		control.high_score_number.text = control.current_score_number.text
+		control.save(int(control.current_score_number.text))
 	
 func event_req_card_check():
 	var array_of_cards_to_destroy: Array[Node2D] = []
@@ -192,3 +202,6 @@ func event_rew_card_give() -> void:
 	else:
 		control.error_message("Free up the slots, take your cards!")
 		return
+
+
+	
