@@ -29,7 +29,7 @@ func draw_card():
 	
 	new_card.position = self.position
 	new_card.get_node("CardSprite").texture = load("res://assets/card/"+ card_drawn +".png")
-	new_card.resource = load("res://resources/"+card_drawn+".tres")
+	new_card.resource = load("res://resources/cards/"+card_drawn+".tres")
 	
 	new_card.card_type = new_card.resource.card_type
 	new_card.card_tier = new_card.resource.tier
@@ -37,12 +37,12 @@ func draw_card():
 	new_card.get_node("Name").horizontal_alignment = 1
 	
 	
-	if new_card.card_type == 3: #IF ITS A MONSTER
-		new_card.get_node("Health").text = str(new_card.resource.health)
-		new_card.get_node("Attack").text = str(new_card.resource.damage)
-	else: 
-		new_card.get_node("Attack").visible = false
-		new_card.get_node("Health").visible = false
+	#if new_card.card_type == 3: #IF ITS A MONSTER
+		#new_card.get_node("Health").text = str(new_card.resource.health)
+		#new_card.get_node("Attack").text = str(new_card.resource.damage)
+	#else: 
+		#new_card.get_node("Attack").visible = false
+		#new_card.get_node("Health").visible = false
 	
 	
 	card_manager.add_child(new_card)
@@ -70,7 +70,7 @@ func receive_card(card_type, slot_pos):
 
 			new_card.position = slot_pos
 			new_card.get_node("CardSprite").texture = load("res://assets/card/"+ random_card +".png")
-			new_card.resource = load("res://resources/" + random_card + ".tres")
+			new_card.resource = load("res://resources/cards/" + random_card + ".tres")
 			
 			new_card.card_type = new_card.resource.card_type
 			new_card.card_tier = new_card.resource.tier

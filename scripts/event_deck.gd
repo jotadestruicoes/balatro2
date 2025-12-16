@@ -1,6 +1,6 @@
 extends Node2D
 
-var event_deck = ["receive2cards", "give2cards", "give1cards"]
+var event_deck = ["give2cards", "receive2cards", "give1cards"]
 
 @onready var player_hand: Node2D = $"../PlayerHand"
 @onready var card_manager: Node2D = $"../CardManager"
@@ -19,7 +19,7 @@ func draw_event_card():
 	var event_card_scene = preload("res://scenes/event_card.tscn")
 	var new_card = event_card_scene.instantiate() #CREATING EVENT CARD
 	new_card.position = self.position
-	new_card.resource = load("res://resources/"+event_card_drawn+".tres")
+	new_card.resource = load("res://resources/events/"+event_card_drawn+".tres")
 	new_card.get_node("EventName").text = new_card.resource.name
 	new_card.get_node("EventDescription").text = new_card.resource.description
 	event_card_manager.start_event(new_card)

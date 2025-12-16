@@ -3,7 +3,7 @@ extends Node2D
 
 var player_hand = []
 var center_screen_x 
-var CARD_WIDTH = 135 
+var CARD_WIDTH = 155 
 var HAND_Y_POSITION = 890
 
 # Called when the node enters the scene tree for the first time.

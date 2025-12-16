@@ -20,11 +20,10 @@ func get_event_requisites_cards(event_card):
 	if event_card.resource.RequisitesAndRewards["requisites"]["cards"].size() != 0:
 		var event_requisites_cards_array: Array[String]
 		for i in event_card.resource.RequisitesAndRewards["requisites"]["cards"]:
-			event_requisites_cards_array.append(" (" + i + ") ")
+			event_requisites_cards_array.append("(" + i + ")")
 		return event_requisites_cards_array
 	else: 
 		return []
-
 func get_event_requisites_events(event_card):
 	if event_card.resource.RequisitesAndRewards["requisites"]["events"].size() != 0:
 		var event_requisites_events_array: Array[String]
@@ -33,7 +32,6 @@ func get_event_requisites_events(event_card):
 		return event_requisites_events_array
 	else: 
 		return []
-
 func get_event_rewards_cards(event_card):
 	if event_card.resource.RequisitesAndRewards["rewards"]["cards"].size() != 0:
 		var event_rewards_cards_array: Array[String]
@@ -42,7 +40,6 @@ func get_event_rewards_cards(event_card):
 		return event_rewards_cards_array
 	else: 
 		return []
-
 func get_event_rewards_events(event_card):
 	if event_card.resource.RequisitesAndRewards["rewards"]["events"].size() != 0:
 		var event_rewards_events_array: Array[String]
@@ -67,7 +64,6 @@ func event_requisites_write(event_card): #WRITE REQUISITES ON CARD
 		event_card.get_node("EventRewards").text += card
 	for card in ere2:
 		event_card.get_node("EventRewards").text += card
-
 func event_rewards_write(event_card): #WRITE REWARDS ON CARD
 	var reqsandrew = event_card.resource.RequisitesAndRewards
 	
@@ -82,7 +78,7 @@ func event_rewards_write(event_card): #WRITE REWARDS ON CARD
 func lock_current_event():
 	event_active = true #CANNOT HAVE MORE THAN ONE PER TURN
 	event_deck.get_node("Area2D/CollisionShape2D").disabled = true
-	
+
 func unlock_current_event():
 	event_active = false #CANNOT HAVE MORE THAN ONE PER TURN
 	event_deck.get_node("Area2D/CollisionShape2D").disabled = false
@@ -100,40 +96,89 @@ func event_req_card_check():
 	var array_of_cards_to_destroy: Array[Node2D] = []
 	var array_of_cards_to_give: Array[Node2D] = []
 	var array_of_slots_to_free: Array[Node2D] = []
-	var requirements: PackedStringArray = []
+	
+	var slots_with_cards: Array[String]
+	var max_slots = 3
+	var slot_number = 1
+	var requisites: PackedStringArray = []
 	var j := 1
 	
 	if event_card_global != null: #IS THERE AN EVENT?
 		for i in get_event_requisites_cards(event_card_global): 
 			#adding all reqs to a list
-			requirements.append(i)
+			requisites.append(i) # ex [" (g) ", " (g) "]
 			
-		if requirements.is_empty():
+		if requisites.is_empty(): # []
 			event_rew_card_give()
-			print("requirements empty")
+			print("requisites empty")
 			return 0
 		
-		for i in requirements: #for every requirement check a slot and notes the card to be taken
-			if slot_manager.get_node("SlotMiddle" + str(requirements.bsearch(i) + j)).card_in_slot != null:
-				#has a card in the j slot
-				array_of_cards_to_destroy.append(slot_manager.get_node("SlotMiddle" + str(requirements.bsearch(i) + j)).card_in_slot)
-				array_of_slots_to_free.append(slot_manager.get_node("SlotMiddle" + str(requirements.bsearch(i) + j)))
-				j += 1
-			else:
-				#does not have card
-				control.error_message("Event requirements not met!")
-				return 0
+		for i in max_slots: #CONTANDO SLOTS COM CARTAS
+			var slot_path := "SlotMiddle" + str(slot_number) # "SlotMiddle" + "1"
+			var slot = slot_manager.get_node(slot_path)
+			
+			if slot.card_in_slot != null: #IF IT HAS A CARD
+				slots_with_cards.append(slot_path) # ex slots_with_cards = [ $SlotMiddle1, $SlotMiddle3 ]
+				# #we'll use to free the slots later
+				 
+			slot_number += 1
+		
+		if slots_with_cards.size() >= requisites.size(): #HAS ENOUGH CARDS IN THE TABLE
+			var requisites_left = requisites.size()
+			for req in requisites:
+				var slots_copy = slots_with_cards.duplicate()
+				for slot in slots_copy:
+					if requisites_left > 0:
+						var card = slot_manager.get_node(slot).card_in_slot
+						var card_type = str(card.card_type)
+
+						if letter_to_type(req, card_type) == card_type:
+							array_of_cards_to_destroy.append(card)
+							slots_with_cards.erase(slot) # remove da lista original
+							array_of_slots_to_free.append(slot_manager.get_node(slot))
+							requisites_left -= 1
+							break
+			#for req in requisites: # req = "(g)"
+				#var index_slot = 0
+				#for slot in slots_with_cards:
+					#if requisites_left > 0:
+						#if letter_to_type(req, str(slot_manager.get_node(slot).card_in_slot.card_type)) == str(slot_manager.get_node(slot).card_in_slot.card_type): #DOES THE CARD IN THE SLOT FITS? generic = generic
+							#array_of_cards_to_destroy.append(slot_manager.get_node(slot).card_in_slot)
+							#slots_with_cards.pop_at(index_slot)
+							#index_slot += 1
+							#requisites_left -= 1
+							#print("requisites left: ", requisites_left)
+							
+		else: 
+			control.error_message("Event requisites not met!")
+			return 0
 			
 		animate_cards(array_of_cards_to_destroy, array_of_slots_to_free)
+		print("array of cards: ",array_of_cards_to_destroy)
+		event_rew_card_give()
+		
+		#for i in requisites: #for every requirement check a slot and notes the card to be taken
+			#if slot_manager.get_node("SlotMiddle" + str(requisites.bsearch(i) + j)).card_in_slot != null:
+				##has a card in the j slot
+				#array_of_cards_to_destroy.append(slot_manager.get_node("SlotMiddle" + str(requisites.bsearch(i) + j)).card_in_slot)
+				#array_of_slots_to_free.append(slot_manager.get_node("SlotMiddle" + str(requisites.bsearch(i) + j)))
+				#j += 1
+			#else:
+				##does not have card
+				#control.error_message("Event requisites not met!")
+				#return 0
 			
+		#animate_cards(array_of_cards_to_destroy, array_of_slots_to_free)
+		#event_rew_card_give()
 			
 		var tween = get_tree().create_tween() #animate event card
 		tween.tween_property(event_card_global, "scale", Vector2(0.0,0.0), 1.5).set_trans(Tween.TRANS_ELASTIC)
 		
-		
+		control.get_node("DoIt/DoItLabelArea/CollisionShape2D").disabled = true
 		control.error_message("Event complete! Congrats!")
 		await tween.finished
 		event_card_global.queue_free()
+		control.get_node("DoIt/DoItLabelArea/CollisionShape2D").disabled = false
 		unlock_current_event()
 		
 		return 1
@@ -142,21 +187,19 @@ func event_req_card_check():
 		control.error_message("No event active at this moment!")
 		return -1
 
-func animate_cards(array_of_cards_to_destroy, array_of_slots_to_free):
-	for card in array_of_cards_to_destroy:
-		var tween = get_tree().create_tween()
-		tween.tween_property(card, "scale", Vector2(0.0,0.0), 1.5).set_trans(Tween.TRANS_ELASTIC)
-		erase_card(card, tween)
+func letter_to_type(letter, card_type):
+	match letter:
+		"(g)": 
+			return card_type
+		"(c)":
+			return "Consumable"
+		"(a)":
+			return "Armor"
+		"(w)":
+			return "Weapon"
+		"(m)":
+			return "Monster"
 		
-	for slot in array_of_slots_to_free:
-		slot.has_card = false
-		slot.card_in_slot = null
-	slot_manager.get_node("SlotMiddle1").has_card = false
-	slot_manager.get_node("SlotMiddle2").has_card = false
-
-func erase_card(card, tween):
-	await tween.finished 
-	card.queue_free()
 
 func event_rew_card_give() -> void:
 	var rewards: PackedStringArray = []
@@ -191,7 +234,7 @@ func event_rew_card_give() -> void:
 
 			deck.receive_card(card_name, pos)
 		
-		control.get_node("DoIt/DoItLabelArea/CollisionShape2D").disabled = true
+
 		var tween = get_tree().create_tween()
 		tween.tween_property(event_card_global, "scale", Vector2(0.0,0.0), 1.5).set_trans(Tween.TRANS_ELASTIC)
 		
@@ -204,4 +247,18 @@ func event_rew_card_give() -> void:
 		return
 
 
-	
+func animate_cards(array_of_cards_to_destroy, array_of_slots_to_free):
+	control.get_node("DoIt/DoItLabelArea/CollisionShape2D").disabled = false
+	print("Slots with cards: ", array_of_slots_to_free)
+	for card in array_of_cards_to_destroy:
+		var tween = get_tree().create_tween()
+		tween.tween_property(card, "scale", Vector2(0.0,0.0), 1.5).set_trans(Tween.TRANS_ELASTIC)
+		erase_card(card, tween)
+		
+	for slot in array_of_slots_to_free:
+		slot.has_card = false
+		slot.card_in_slot = null
+
+func erase_card(card, tween):
+	await tween.finished 
+	card.queue_free()

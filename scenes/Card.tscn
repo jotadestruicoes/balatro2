@@ -1,7 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://bpbqip4lpu2c3"]
+[gd_scene load_steps=9 format=3 uid="uid://bpbqip4lpu2c3"]
 
 [ext_resource type="Script" path="res://scripts/Card.gd" id="1_8oaic"]
 [ext_resource type="Texture2D" uid="uid://dpvuvvidi2fuc" path="res://assets/genericcard.png" id="2_s2jg6"]
+[ext_resource type="Texture2D" uid="uid://ce487kfpett1y" path="res://assets/attack.png" id="3_03c8q"]
+[ext_resource type="Texture2D" uid="uid://p81vl53cf5jy" path="res://assets/health.png" id="4_q7x5l"]
+[ext_resource type="Texture2D" uid="uid://4n146clu0l1h" path="res://assets/shield.png" id="5_7fpg1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bttkx"]
 size = Vector2(120, 156)
@@ -24,24 +27,24 @@ shape = SubResource("RectangleShape2D_bttkx")
 
 [node name="CardSprite" type="Sprite2D" parent="."]
 position = Vector2(0, -1)
-scale = Vector2(3, 3)
+scale = Vector2(3.5, 3.5)
 texture = ExtResource("2_s2jg6")
 
 [node name="Attack" type="RichTextLabel" parent="."]
 modulate = Color(0.133333, 0.133333, 0.133333, 1)
-offset_left = -48.0
-offset_top = 38.0
-offset_right = -8.0
-offset_bottom = 78.0
+offset_left = -54.0
+offset_top = 52.0
+offset_right = -14.0
+offset_bottom = 92.0
 scale = Vector2(1.5, 1.5)
 text = "0"
 
 [node name="Health" type="RichTextLabel" parent="."]
 modulate = Color(0.133333, 0.133333, 0.133333, 1)
-offset_left = 35.0
-offset_top = 38.0
-offset_right = 75.0
-offset_bottom = 78.0
+offset_left = 40.0
+offset_top = 53.0
+offset_right = 80.0
+offset_bottom = 93.0
 scale = Vector2(1.5, 1.5)
 bbcode_enabled = true
 text = "0"
@@ -49,20 +52,35 @@ text = "0"
 [node name="Tier" type="Label" parent="."]
 modulate = Color(0.133333, 0.133333, 0.133333, 1)
 offset_left = -9.0
-offset_top = 47.0
+offset_top = 61.0
 offset_right = 10.0
-offset_bottom = 70.0
+offset_bottom = 84.0
 text = "T0"
 label_settings = SubResource("LabelSettings_6n1d8")
 
 [node name="Name" type="Label" parent="."]
 modulate = Color(0.133333, 0.133333, 0.133333, 1)
 offset_left = -48.0
-offset_top = -70.0
+offset_top = -84.0
 offset_right = 48.0
-offset_bottom = -47.6667
+offset_bottom = -61.0
 text = "Card"
 horizontal_alignment = 1
+
+[node name="Attack2" type="Sprite2D" parent="."]
+position = Vector2(-49, 43)
+scale = Vector2(2, 2)
+texture = ExtResource("3_03c8q")
+
+[node name="Health2" type="Sprite2D" parent="."]
+position = Vector2(45, 42)
+scale = Vector2(2, 2)
+texture = ExtResource("4_q7x5l")
+
+[node name="Shield" type="Sprite2D" parent="."]
+position = Vector2(47, 45)
+scale = Vector2(2, 2)
+texture = ExtResource("5_7fpg1")
 
 [connection signal="mouse_entered" from="Area2D" to="." method="_on_generic_card_mouse_entered"]
 [connection signal="mouse_exited" from="Area2D" to="." method="_on_generic_card_mouse_exited"]

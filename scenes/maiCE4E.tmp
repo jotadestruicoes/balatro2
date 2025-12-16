@@ -1,0 +1,179 @@
+[gd_scene load_steps=21 format=3 uid="uid://diuo6tplhlwfn"]
+
+[ext_resource type="PackedScene" uid="uid://ctjnk36stbbh5" path="res://scenes/tabledark.tscn" id="1_xekhy"]
+[ext_resource type="Script" path="res://scripts/card_manager.gd" id="2_cmje1"]
+[ext_resource type="Script" path="res://scripts/player_hand.gd" id="3_jvpbs"]
+[ext_resource type="PackedScene" uid="uid://cqxn6767vob5b" path="res://scenes/deck.tscn" id="4_h2bbw"]
+[ext_resource type="Script" path="res://scripts/input_manager.gd" id="5_shxtj"]
+[ext_resource type="PackedScene" uid="uid://yli63mx0h43d" path="res://scenes/card_slot.tscn" id="6_ssbln"]
+[ext_resource type="PackedScene" uid="uid://vvvaxhpha2a5" path="res://scenes/weapon_slot.tscn" id="7_xxnxd"]
+[ext_resource type="PackedScene" uid="uid://cjgiwpv487vj8" path="res://scenes/armor_slot.tscn" id="8_dtkdi"]
+[ext_resource type="Script" path="res://scripts/card_slot_armor.gd" id="9_tgejs"]
+[ext_resource type="PackedScene" uid="uid://b8mb4i0ax2dv8" path="res://scenes/gold.tscn" id="10_42c7m"]
+[ext_resource type="PackedScene" uid="uid://b561nb00p3me5" path="res://scenes/event_deck.tscn" id="11_ildph"]
+[ext_resource type="Script" path="res://scripts/event_card_manager.gd" id="12_xi107"]
+[ext_resource type="Script" path="res://scripts/control.gd" id="13_q3rhg"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_7veck"]
+font_size = 32
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_85s3g"]
+size = Vector2(86, 42)
+
+[sub_resource type="LabelSettings" id="LabelSettings_mgmfn"]
+font_size = 24
+
+[sub_resource type="LabelSettings" id="LabelSettings_pew2w"]
+font_size = 32
+
+[sub_resource type="LabelSettings" id="LabelSettings_fci64"]
+font_size = 60
+
+[sub_resource type="LabelSettings" id="LabelSettings_wmill"]
+font_size = 32
+
+[sub_resource type="LabelSettings" id="LabelSettings_pnxpf"]
+font_size = 42
+
+[node name="MainScene" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(960, 540)
+
+[node name="Tabledark" parent="." instance=ExtResource("1_xekhy")]
+
+[node name="CardManager" type="Node2D" parent="."]
+script = ExtResource("2_cmje1")
+
+[node name="PlayerHand" type="Node2D" parent="."]
+script = ExtResource("3_jvpbs")
+
+[node name="SlotManager" type="Node2D" parent="."]
+
+[node name="SlotMiddle1" parent="SlotManager" instance=ExtResource("6_ssbln")]
+position = Vector2(800, 540)
+
+[node name="SlotMiddle2" parent="SlotManager" instance=ExtResource("6_ssbln")]
+position = Vector2(960, 540)
+
+[node name="SlotMiddle3" parent="SlotManager" instance=ExtResource("6_ssbln")]
+position = Vector2(1119, 540)
+
+[node name="CardSlotWeapon" parent="SlotManager" instance=ExtResource("7_xxnxd")]
+position = Vector2(150, 677)
+
+[node name="CardSlotArmor" parent="SlotManager" instance=ExtResource("8_dtkdi")]
+position = Vector2(310, 677)
+script = ExtResource("9_tgejs")
+
+[node name="Deck" parent="." instance=ExtResource("4_h2bbw")]
+z_index = 1
+position = Vector2(150, 890)
+
+[node name="InputManager" type="Node2D" parent="."]
+script = ExtResource("5_shxtj")
+
+[node name="Gold" parent="." instance=ExtResource("10_42c7m")]
+position = Vector2(1757, 881)
+
+[node name="EventDeck" parent="." instance=ExtResource("11_ildph")]
+position = Vector2(1756, 540)
+
+[node name="EventCardManager" type="Node2D" parent="."]
+script = ExtResource("12_xi107")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("13_q3rhg")
+
+[node name="DoIt" type="Label" parent="Control"]
+layout_mode = 0
+offset_left = 917.0
+offset_top = 348.0
+offset_right = 1007.0
+offset_bottom = 393.0
+pivot_offset = Vector2(45, 23)
+text = "Do it. "
+label_settings = SubResource("LabelSettings_7veck")
+
+[node name="DoItLabelArea" type="Area2D" parent="Control/DoIt"]
+position = Vector2(-913, -374)
+collision_layer = 32
+collision_mask = 32
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Control/DoIt/DoItLabelArea"]
+position = Vector2(955, 397)
+shape = SubResource("RectangleShape2D_85s3g")
+
+[node name="Errors" type="Label" parent="Control"]
+layout_mode = 0
+offset_left = 745.0
+offset_top = 402.0
+offset_right = 1174.0
+offset_bottom = 436.0
+theme_override_colors/font_color = Color(0.445002, 0.193703, 0.220807, 1)
+theme_override_colors/font_shadow_color = Color(0.839216, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0.741176, 0, 0, 1)
+text = "Insert any error here!"
+label_settings = SubResource("LabelSettings_mgmfn")
+horizontal_alignment = 1
+
+[node name="ScoresVBox" type="VBoxContainer" parent="Control"]
+layout_mode = 1
+offset_left = 80.0
+offset_top = 66.0
+offset_right = 222.0
+offset_bottom = 213.0
+alignment = 2
+
+[node name="CurrentScoreHBox" type="HBoxContainer" parent="Control/ScoresVBox"]
+layout_mode = 2
+
+[node name="CurrentScore" type="Label" parent="Control/ScoresVBox/CurrentScoreHBox"]
+layout_mode = 2
+text = "S: "
+label_settings = SubResource("LabelSettings_pew2w")
+
+[node name="CurrentScoreNUMBER" type="Label" parent="Control/ScoresVBox/CurrentScoreHBox"]
+layout_mode = 2
+text = "420"
+label_settings = SubResource("LabelSettings_fci64")
+
+[node name="HighScoreHBox" type="HBoxContainer" parent="Control/ScoresVBox"]
+layout_mode = 2
+
+[node name="HighScore" type="Label" parent="Control/ScoresVBox/HighScoreHBox"]
+layout_mode = 2
+text = "H: "
+label_settings = SubResource("LabelSettings_wmill")
+
+[node name="HighScoreNUMBER" type="Label" parent="Control/ScoresVBox/HighScoreHBox"]
+layout_mode = 2
+text = "69"
+label_settings = SubResource("LabelSettings_pnxpf")
+
+[node name="ResetHighScore" type="Button" parent="Control"]
+layout_mode = 0
+offset_left = 81.0
+offset_top = 234.0
+offset_right = 222.0
+offset_bottom = 277.0
+text = "RESET H. SCORE"
+
+[node name="ResetGame" type="Button" parent="Control"]
+layout_mode = 0
+offset_left = 1712.0
+offset_top = 83.0
+offset_right = 1820.0
+offset_bottom = 141.0
+theme_override_font_sizes/font_size = 24
+text = "RESET 
+GAME"
+
+[connection signal="mouse_entered" from="Control/DoIt/DoItLabelArea" to="Control" method="_on_label_mouse_entered"]
+[connection signal="mouse_exited" from="Control/DoIt/DoItLabelArea" to="Control" method="_on_label_mouse_exited"]
+[connection signal="pressed" from="Control/ResetHighScore" to="Control" method="_on_reset_high_score_button_pressed"]
+[connection signal="pressed" from="Control/ResetGame" to="Control" method="_on_reset_game_pressed"]
