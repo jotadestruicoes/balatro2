@@ -1,7 +1,7 @@
 extends Node2D
 
 var event_active: bool
-var event_card_global 
+var global_event_card 
 var current_score := 0 
 
 @onready var event_deck: Node2D = $"../EventDeck"
@@ -12,7 +12,7 @@ var current_score := 0
 const CARD = preload("res://scenes/Card.tscn")
 
 func start_event(event_card):
-	event_card_global = event_card
+	global_event_card = event_card
 	event_requisites_write(event_card)
 	lock_current_event()
 
@@ -98,13 +98,18 @@ func event_req_card_check():
 	var array_of_slots_to_free: Array[Node2D] = []
 	
 	var slots_with_cards: Array[String]
+	var free_slots: Array[StringName] = []
 	var max_slots = 3
 	var slot_number = 1
 	var requisites: PackedStringArray = []
 	var j := 1
 	
-	if event_card_global != null: #IS THERE AN EVENT?
-		for i in get_event_requisites_cards(event_card_global): 
+	if global_event_card != null: #IS THERE AN EVENT?
+		#if count_empty_slots(3, free_slots, 1).size() < get_event_rewards_cards(global_event_card).size(): 
+			#control.error_message("Free up the slots, take your cards!")
+			#return
+			
+		for i in get_event_requisites_cards(global_event_card): 
 			#adding all reqs to a list
 			requisites.append(i) # ex [" (g) ", " (g) "]
 			
@@ -122,62 +127,46 @@ func event_req_card_check():
 				# #we'll use to free the slots later
 				 
 			slot_number += 1
+			
 		
+		#ADICIONAR AQUI A CHECAGEM DE REWARDS... 
+			#MESMA LÓGICA DE CARTAS DE REWARDS SÓ QUE NO REQUISITES PRA TER ESPAÇO 
+			#DEPOIS PRA ENTREGAR OS REWARDS
+			
 		if slots_with_cards.size() >= requisites.size(): #HAS ENOUGH CARDS IN THE TABLE
-			var requisites_left = requisites.size()
+			var requisites_left = requisites.size() #FALTA ADICIONAR VERIFICADOR DE TIPO
 			for req in requisites:
 				var slots_copy = slots_with_cards.duplicate()
 				for slot in slots_copy:
 					if requisites_left > 0:
 						var card = slot_manager.get_node(slot).card_in_slot
-						var card_type = str(card.card_type)
+						var card_type = card.card_type
 
-						if letter_to_type(req, card_type) == card_type:
+						if letter_to_type(req, card_type) == card_type: #int and int ok
+							print("req: ", letter_to_type(req, card_type))
+							print(card_type)
 							array_of_cards_to_destroy.append(card)
 							slots_with_cards.erase(slot) # remove da lista original
 							array_of_slots_to_free.append(slot_manager.get_node(slot))
 							requisites_left -= 1
 							break
-			#for req in requisites: # req = "(g)"
-				#var index_slot = 0
-				#for slot in slots_with_cards:
-					#if requisites_left > 0:
-						#if letter_to_type(req, str(slot_manager.get_node(slot).card_in_slot.card_type)) == str(slot_manager.get_node(slot).card_in_slot.card_type): #DOES THE CARD IN THE SLOT FITS? generic = generic
-							#array_of_cards_to_destroy.append(slot_manager.get_node(slot).card_in_slot)
-							#slots_with_cards.pop_at(index_slot)
-							#index_slot += 1
-							#requisites_left -= 1
-							#print("requisites left: ", requisites_left)
-							
+						else:
+							control.error_message("Wrong card type!")
+							return							
 		else: 
-			control.error_message("Event requisites not met!")
+			control.error_message("Not enough cards!")
 			return 0
 			
 		animate_cards(array_of_cards_to_destroy, array_of_slots_to_free)
-		print("array of cards: ",array_of_cards_to_destroy)
 		event_rew_card_give()
-		
-		#for i in requisites: #for every requirement check a slot and notes the card to be taken
-			#if slot_manager.get_node("SlotMiddle" + str(requisites.bsearch(i) + j)).card_in_slot != null:
-				##has a card in the j slot
-				#array_of_cards_to_destroy.append(slot_manager.get_node("SlotMiddle" + str(requisites.bsearch(i) + j)).card_in_slot)
-				#array_of_slots_to_free.append(slot_manager.get_node("SlotMiddle" + str(requisites.bsearch(i) + j)))
-				#j += 1
-			#else:
-				##does not have card
-				#control.error_message("Event requisites not met!")
-				#return 0
-			
-		#animate_cards(array_of_cards_to_destroy, array_of_slots_to_free)
-		#event_rew_card_give()
 			
 		var tween = get_tree().create_tween() #animate event card
-		tween.tween_property(event_card_global, "scale", Vector2(0.0,0.0), 1.5).set_trans(Tween.TRANS_ELASTIC)
+		tween.tween_property(global_event_card, "scale", Vector2(0.0,0.0), 1.5).set_trans(Tween.TRANS_ELASTIC)
 		
 		control.get_node("DoIt/DoItLabelArea/CollisionShape2D").disabled = true
 		control.error_message("Event complete! Congrats!")
 		await tween.finished
-		event_card_global.queue_free()
+		global_event_card.queue_free()
 		control.get_node("DoIt/DoItLabelArea/CollisionShape2D").disabled = false
 		unlock_current_event()
 		
@@ -192,20 +181,19 @@ func letter_to_type(letter, card_type):
 		"(g)": 
 			return card_type
 		"(c)":
-			return "Consumable"
+			return Card.CardType.CONSUMABLE
 		"(a)":
-			return "Armor"
+			return Card.CardType.ARMOR
 		"(w)":
-			return "Weapon"
+			return Card.CardType.WEAPON
 		"(m)":
-			return "Monster"
-		
-
+			return Card.CardType.MONSTER
+			
 func event_rew_card_give() -> void:
 	var rewards: PackedStringArray = []
 	
 	# 1. Coletar todas as cartas recompensa
-	for card_name in event_card_global.resource.RequisitesAndRewards["rewards"]["cards"]:
+	for card_name in global_event_card.resource.RequisitesAndRewards["rewards"]["cards"]:
 		rewards.append(card_name) #QUANTAS CARTAS PRECISA-SE ENTREGAR
 
 	if rewards.is_empty():
@@ -215,14 +203,7 @@ func event_rew_card_give() -> void:
 	var slot_number := 1 #SLOT1, SLOT 2 E SLOT 3
 	var max_slots := 3 #HOW MANY SLOTS DO WE HAVE - HAS TO BE UPDATED IF WE ADD MORE
 
-	for i in max_slots: #CONTANDO SLOTS LIVRES
-		var slot_path := "SlotMiddle" + str(slot_number)
-		var slot = slot_manager.get_node(slot_path)
-		
-		if slot.card_in_slot == null:
-			free_slots.append(slot_path)
-			
-		slot_number += 1
+	free_slots = count_empty_slots(max_slots, free_slots, slot_number) #returns free_slots
 		
 	# 3. Se há slots suficientes, entregar as cartas
 	if free_slots.size() >= rewards.size():
@@ -231,25 +212,22 @@ func event_rew_card_give() -> void:
 			var slot = slot_manager.get_node(str(slot_path))
 			var pos = slot.position
 			var card_name = rewards[index]
-
-			deck.receive_card(card_name, pos)
 		
+			deck.receive_card(card_name, pos)
 
 		var tween = get_tree().create_tween()
-		tween.tween_property(event_card_global, "scale", Vector2(0.0,0.0), 1.5).set_trans(Tween.TRANS_ELASTIC)
+		tween.tween_property(global_event_card, "scale", Vector2(0.0,0.0), 1.5).set_trans(Tween.TRANS_ELASTIC)
 		
 		control.error_message("Event complete! Congrats!")
 		await tween.finished
-		event_card_global.queue_free()
+		global_event_card.queue_free()
 		unlock_current_event()
 	else:
 		control.error_message("Free up the slots, take your cards!")
 		return
 
-
 func animate_cards(array_of_cards_to_destroy, array_of_slots_to_free):
 	control.get_node("DoIt/DoItLabelArea/CollisionShape2D").disabled = false
-	print("Slots with cards: ", array_of_slots_to_free)
 	for card in array_of_cards_to_destroy:
 		var tween = get_tree().create_tween()
 		tween.tween_property(card, "scale", Vector2(0.0,0.0), 1.5).set_trans(Tween.TRANS_ELASTIC)
@@ -262,3 +240,14 @@ func animate_cards(array_of_cards_to_destroy, array_of_slots_to_free):
 func erase_card(card, tween):
 	await tween.finished 
 	card.queue_free()
+
+func count_empty_slots(max_slots, free_slots, slot_number):
+	for i in max_slots: #CONTANDO SLOTS LIVRES
+		var slot_path := "SlotMiddle" + str(slot_number)
+		var slot = slot_manager.get_node(slot_path)
+		
+		if slot.card_in_slot == null:
+			free_slots.append(slot_path)
+			
+		slot_number += 1
+	return free_slots

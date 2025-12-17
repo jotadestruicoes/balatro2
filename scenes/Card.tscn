@@ -26,6 +26,7 @@ position = Vector2(0, -1)
 shape = SubResource("RectangleShape2D_bttkx")
 
 [node name="CardSprite" type="Sprite2D" parent="."]
+modulate = Color(0.850302, 0.717172, 0.847622, 1)
 position = Vector2(0, -1)
 scale = Vector2(3.5, 3.5)
 texture = ExtResource("2_s2jg6")

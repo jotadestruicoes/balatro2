@@ -1,14 +1,11 @@
 extends Node2D
 
-var event_deck = ["give2cards", "receive2cards", "give1cards"]
+var event_deck = ["give2cards", "receive2cards", "give1cards", "hunger", "blacksmith", "thebutcher"]
 
 @onready var player_hand: Node2D = $"../PlayerHand"
 @onready var card_manager: Node2D = $"../CardManager"
 @onready var event_card_manager: Node2D = $"../EventCardManager"
 @onready var control: Control = $"../Control"
-
-func _ready() -> void:
-	pass
 	
 func draw_event_card():
 	event_deck.shuffle()
@@ -24,7 +21,7 @@ func draw_event_card():
 	new_card.get_node("EventDescription").text = new_card.resource.description
 	event_card_manager.start_event(new_card)
 	
-	$"../CardManager".add_child(new_card)
+	card_manager.add_child(new_card)
 	
 	update_event_card_position(new_card, Vector2(self.position.x - 170, self.position.y), Vector2(1.4,1.4))
 

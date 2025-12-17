@@ -173,6 +173,19 @@ theme_override_font_sizes/font_size = 24
 text = "RESET 
 GAME"
 
+[node name="Label" type="Label" parent="."]
+offset_left = -502.0
+offset_top = 492.0
+offset_right = -87.0
+offset_bottom = 843.0
+theme_override_font_sizes/font_size = 40
+text = "enum CardType {
+	WEAPON,  #0
+	ARMOR,   #1
+	CONSUMABLE,  #2
+	MONSTER #3
+}"
+
 [connection signal="mouse_entered" from="Control/DoIt/DoItLabelArea" to="Control" method="_on_label_mouse_entered"]
 [connection signal="mouse_exited" from="Control/DoIt/DoItLabelArea" to="Control" method="_on_label_mouse_exited"]
 [connection signal="pressed" from="Control/ResetHighScore" to="Control" method="_on_reset_high_score_button_pressed"]

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="EventCard" load_steps=2 format=3 uid="uid://bk20w8myi7cum"]
+
+[ext_resource type="Script" path="res://scripts/event_card_res.gd" id="1_jkae6"]
+
+[resource]
+script = ExtResource("1_jkae6")
+RequisitesAndRewards = {
+"requisites": {
+"cards": ["m", "a"],
+"events": []
+},
+"rewards": {
+"cards": ["c", "c"],
+"events": []
+}
+}
+tier = 0
+name = "The Butcher"
+description = "A noble butcher demands money for his work.  "

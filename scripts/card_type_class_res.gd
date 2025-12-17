@@ -2,10 +2,10 @@ extends Resource
 class_name Card
 
 enum CardType {
-	WEAPON, 
-	ARMOR, 
-	CONSUMABLE, 
-	MONSTER
+	WEAPON,  #0
+	ARMOR,   #1
+	CONSUMABLE,  #2
+	MONSTER #3
 }
 
 enum Tier {
