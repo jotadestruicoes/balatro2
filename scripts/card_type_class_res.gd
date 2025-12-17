@@ -5,7 +5,8 @@ enum CardType {
 	WEAPON,  #0
 	ARMOR,   #1
 	CONSUMABLE,  #2
-	MONSTER #3
+	MONSTER, #3
+	GENERIC #4
 }
 
 enum Tier {

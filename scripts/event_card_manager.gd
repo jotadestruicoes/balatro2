@@ -94,100 +94,148 @@ func score():
 	
 func event_req_card_check():
 	var array_of_cards_to_destroy: Array[Node2D] = []
-	var array_of_cards_to_give: Array[Node2D] = []
 	var array_of_slots_to_free: Array[Node2D] = []
-	
-	var slots_with_cards: Array[String]
-	var free_slots: Array[StringName] = []
-	var max_slots = 3
-	var slot_number = 1
+	var slots_with_cards: Array[String] = []
 	var requisites: PackedStringArray = []
-	var j := 1
-	
-	if global_event_card != null: #IS THERE AN EVENT?
-		#if count_empty_slots(3, free_slots, 1).size() < get_event_rewards_cards(global_event_card).size(): 
-			#control.error_message("Free up the slots, take your cards!")
-			#return
-			
-		for i in get_event_requisites_cards(global_event_card): 
-			#adding all reqs to a list
-			requisites.append(i) # ex [" (g) ", " (g) "]
-			
-		if requisites.is_empty(): # []
-			event_rew_card_give()
-			print("requisites empty")
-			return 0
-		
-		for i in max_slots: #CONTANDO SLOTS COM CARTAS
-			var slot_path := "SlotMiddle" + str(slot_number) # "SlotMiddle" + "1"
-			var slot = slot_manager.get_node(slot_path)
-			
-			if slot.card_in_slot != null: #IF IT HAS A CARD
-				slots_with_cards.append(slot_path) # ex slots_with_cards = [ $SlotMiddle1, $SlotMiddle3 ]
-				# #we'll use to free the slots later
-				 
-			slot_number += 1
-			
-		
-		#ADICIONAR AQUI A CHECAGEM DE REWARDS... 
-			#MESMA LÓGICA DE CARTAS DE REWARDS SÓ QUE NO REQUISITES PRA TER ESPAÇO 
-			#DEPOIS PRA ENTREGAR OS REWARDS
-			
-		if slots_with_cards.size() >= requisites.size(): #HAS ENOUGH CARDS IN THE TABLE
-			var requisites_left = requisites.size() #FALTA ADICIONAR VERIFICADOR DE TIPO
-			for req in requisites:
-				var slots_copy = slots_with_cards.duplicate()
-				for slot in slots_copy:
-					if requisites_left > 0:
-						var card = slot_manager.get_node(slot).card_in_slot
-						var card_type = card.card_type
+	var slot_number := 1
 
-						if letter_to_type(req, card_type) == card_type: #int and int ok
-							print("req: ", letter_to_type(req, card_type))
-							print(card_type)
-							array_of_cards_to_destroy.append(card)
-							slots_with_cards.erase(slot) # remove da lista original
-							array_of_slots_to_free.append(slot_manager.get_node(slot))
-							requisites_left -= 1
-							break
-						else:
-							control.error_message("Wrong card type!")
-							return							
-		else: 
-			control.error_message("Not enough cards!")
-			return 0
-			
-		animate_cards(array_of_cards_to_destroy, array_of_slots_to_free)
-		event_rew_card_give()
-			
-		var tween = get_tree().create_tween() #animate event card
-		tween.tween_property(global_event_card, "scale", Vector2(0.0,0.0), 1.5).set_trans(Tween.TRANS_ELASTIC)
-		
-		control.get_node("DoIt/DoItLabelArea/CollisionShape2D").disabled = true
-		control.error_message("Event complete! Congrats!")
-		await tween.finished
-		global_event_card.queue_free()
-		control.get_node("DoIt/DoItLabelArea/CollisionShape2D").disabled = false
-		unlock_current_event()
-		
-		return 1
-			
-	else:
+	# -----------------------------------------
+	# 0. Verifica se há evento ativo
+	# -----------------------------------------
+	if global_event_card == null:
 		control.error_message("No event active at this moment!")
 		return -1
 
-func letter_to_type(letter, card_type):
+	# -----------------------------------------
+	# 1. Coleta requisitos do evento
+	# -----------------------------------------
+	for req in get_event_requisites_cards(global_event_card):
+		requisites.append(req)
+
+	if requisites.is_empty():
+		event_rew_card_give()
+		return 0
+
+	# -----------------------------------------
+	# 2. Coleta slots com cartas
+	# -----------------------------------------
+	for i in 3:
+		var slot_path = "SlotMiddle" + str(slot_number)
+		var slot = slot_manager.get_node(slot_path)
+
+		if slot.card_in_slot != null:
+			slots_with_cards.append(slot_path)
+
+		slot_number += 1
+
+	if slots_with_cards.size() < requisites.size():
+		control.error_message("Not enough cards!")
+		return 0
+
+	# -----------------------------------------
+	# 3. Agrupa cartas por tipo (ENUM)
+	# -----------------------------------------
+	var cards_by_type := {
+		Card.CardType.MONSTER: [],
+		Card.CardType.ARMOR: [],
+		Card.CardType.WEAPON: [],
+		Card.CardType.CONSUMABLE: [],
+		Card.CardType.GENERIC: []  # cartas realmente genéricas, se existirem
+	}
+
+	for slot_path in slots_with_cards:
+		var slot = slot_manager.get_node(slot_path)
+		var card = slot.card_in_slot
+		var type = card.card_type
+		cards_by_type[type].append({"card": card, "slot": slot})
+
+	# -----------------------------------------
+	# 4. Conta requisitos por tipo (ENUM)
+	# -----------------------------------------
+	var req_count := {
+		Card.CardType.MONSTER: 0,
+		Card.CardType.ARMOR: 0,
+		Card.CardType.WEAPON: 0,
+		Card.CardType.CONSUMABLE: 0,
+		Card.CardType.GENERIC: 0
+	}
+
+	for req in requisites:
+		var type = letter_to_type(req, null)
+		if type == null:
+			control.error_message("Invalid requisite: " + str(req))
+			return 0
+		req_count[type] += 1
+
+	# -----------------------------------------
+	# 5. Verifica se há cartas suficientes para requisitos específicos
+	# -----------------------------------------
+	for type in [Card.CardType.MONSTER, Card.CardType.ARMOR, Card.CardType.WEAPON, Card.CardType.CONSUMABLE]:
+		if cards_by_type[type].size() < req_count[type]:
+			control.error_message("Event requisites not met!")
+			return 0
+
+	# -----------------------------------------
+	# 6. Seleciona cartas específicas primeiro
+	# -----------------------------------------
+	for type in [Card.CardType.MONSTER, Card.CardType.ARMOR, Card.CardType.WEAPON, Card.CardType.CONSUMABLE]:
+		for i in req_count[type]:
+			var entry = cards_by_type[type].pop_front()
+			array_of_cards_to_destroy.append(entry["card"])
+			array_of_slots_to_free.append(entry["slot"])
+			entry["slot"].card_in_slot = null
+
+	# -----------------------------------------
+	# 7. Agora trata os genéricos (pega qualquer carta restante)
+	# -----------------------------------------
+	var generic_needed = req_count[Card.CardType.GENERIC]
+
+	# Junta todas as cartas restantes
+	var remaining_cards := []
+	for type in cards_by_type.keys():
+		remaining_cards += cards_by_type[type]
+
+	if remaining_cards.size() < generic_needed:
+		control.error_message("Event requisites not met!")
+		return 0
+
+	for i in generic_needed:
+		var entry = remaining_cards.pop_front()
+		array_of_cards_to_destroy.append(entry["card"])
+		array_of_slots_to_free.append(entry["slot"])
+		entry["slot"].card_in_slot = null
+
+	# -----------------------------------------
+	# 8. Anima, recompensa e finaliza evento
+	# -----------------------------------------
+	animate_cards(array_of_cards_to_destroy, array_of_slots_to_free)
+	event_rew_card_give()
+
+	var tween = get_tree().create_tween()
+	tween.tween_property(global_event_card, "scale", Vector2(0,0), 1.5).set_trans(Tween.TRANS_ELASTIC)
+
+	control.get_node("DoIt/DoItLabelArea/CollisionShape2D").disabled = true
+	control.error_message("Event complete! Congrats!")
+	await tween.finished
+	global_event_card.queue_free()
+	control.get_node("DoIt/DoItLabelArea/CollisionShape2D").disabled = false
+
+	unlock_current_event()
+	return 1
+
+func letter_to_type(letter, _unused):
+	letter = letter.strip_edges()
+
 	match letter:
-		"(g)": 
-			return card_type
-		"(c)":
-			return Card.CardType.CONSUMABLE
-		"(a)":
-			return Card.CardType.ARMOR
-		"(w)":
-			return Card.CardType.WEAPON
-		"(m)":
-			return Card.CardType.MONSTER
+		"(g)": return Card.CardType.GENERIC
+		"(c)": return Card.CardType.CONSUMABLE
+		"(a)": return Card.CardType.ARMOR
+		"(w)": return Card.CardType.WEAPON
+		"(m)": return Card.CardType.MONSTER
+
+	push_warning("Requisite inválido: " + str(letter))
+	return null
+
 			
 func event_rew_card_give() -> void:
 	var rewards: PackedStringArray = []
