@@ -2,6 +2,7 @@ extends Node2D
 
 const COLLISION_MASK_CARD = 1
 const COLLISION_MASK_CARD_SLOT = 2
+const COLLISION_MASK_PLAYER_HAND = 64
 
 var card_being_dragged
 var screen_size
@@ -21,47 +22,67 @@ func _process(_delta: float) -> void:
 		var mouse_pos = get_global_mouse_position()
 		card_being_dragged.position = Vector2(clamp(mouse_pos.x, 0, screen_size.x), clamp(mouse_pos.y, 0, screen_size.y))
 
+var original_slot: Node = null  # referência ao slot de origem durante o drag
+
 func start_drag(card):
 	card_being_dragged = card
-	card.scale = Vector2(1,1)
-	
+	card.scale = Vector2(1, 1)
+
+	# Guarda o slot original para fallback
+	original_slot = card.current_slot
+
+	# Libera imediatamente o slot de origem (para não ficar marcado como ocupado)
+	if original_slot != null:
+		original_slot.has_card = false
+		if original_slot.card_in_slot == card:
+			original_slot.card_in_slot = null
+		card.current_slot = null
+
 func finish_drag():
 	card_being_dragged.scale = Vector2(1.05, 1.05)
 	var card_slot_found = raycast_check_for_card_slot()
-	var slot_of_card = card_being_dragged.current_slot
-	
-	if card_slot_found and card_slot_found.card_type_allowed.has(card_being_dragged.card_type): #achou um slot e a carta pode ir nesse slot
-		if card_slot_found == slot_of_card: #é o mesmo da carta
-			player_hand.remove_card_from_hand(card_being_dragged)
-			card_being_dragged.position = card_slot_found.position #COLOCA
-			card_slot_found.has_card = true
-			card_being_dragged.current_slot = card_slot_found
-		else: #é outro slot
-			if card_slot_found.has_card == false:
-				player_hand.remove_card_from_hand(card_being_dragged)
-				card_being_dragged.position = card_slot_found.position #COLOCA
-				
-				card_slot_found.card_in_slot = card_being_dragged
-				
-				if card_being_dragged.current_slot != null:
-					card_being_dragged.current_slot.has_card = false #libera o slot antigo
-					card_being_dragged.current_slot.card_in_slot = null
-			
-				card_slot_found.has_card = true
-				card_being_dragged.current_slot = card_slot_found #armazena novo slot
-			else:
-				card_being_dragged.current_slot = null #limpa o armazenamento
-				player_hand.add_card_to_hand(card_being_dragged) #card volta pra mao
-	else: #nao achou um slot
-		player_hand.add_card_to_hand(card_being_dragged) #card volta pra mao
+	var hand_area_found = raycast_check_for_hand()
+	var card = card_being_dragged
+
+	# 1) Drop explícito na mão tem prioridade
+	if hand_area_found:
+		card.current_slot = null
+		player_hand.add_card_to_hand(card)
+		card_being_dragged = null
+		original_slot = null
+		return
 		
-		if card_being_dragged.current_slot != null: #se tinha algum slot armazenado
-			card_being_dragged.current_slot.has_card = false #libera o slot antigo
-			card_being_dragged.current_slot.card_in_slot = null
-			card_being_dragged.current_slot = null #limpa o armazenamento
-#
+	# 2) Achou slot e é permitido
+	if card_slot_found and card_slot_found.card_type_allowed.has(card.card_type):
+		if not card_slot_found.has_card: #se o slot está vazio
+			player_hand.remove_card_from_hand(card)
+			card.position = card_slot_found.position
+			card_slot_found.card_in_slot = card
+			card_slot_found.has_card = true
+			card.current_slot = card_slot_found
+		else:
+			# Slot destino ocupado → fallback pro slot original
+			if original_slot != null and not original_slot.has_card:
+				card.position = original_slot.position
+				original_slot.card_in_slot = card
+				original_slot.has_card = true
+				card.current_slot = original_slot
+			else:
+				card.current_slot = null
+				player_hand.add_card_to_hand(card)
+	else:
+		# 3) Não achou slot: se não está sobre a mão, fallback pro slot original; senão já teria retornado acima
+		if original_slot != null and not original_slot.has_card:
+			card.position = original_slot.position
+			original_slot.card_in_slot = card
+			original_slot.has_card = true
+			card.current_slot = original_slot
+		else:
+			card.current_slot = null
+			player_hand.add_card_to_hand(card)
 
 	card_being_dragged = null
+	original_slot = null
 
 func connect_card_signals(card):
 	card.connect("hovered", on_hovered_over_card)
@@ -117,6 +138,17 @@ func raycast_check_for_card():
 		return get_card_with_highest_z_index(result)
 	return null
 	
+func raycast_check_for_hand():
+	var space_state = get_world_2d().direct_space_state
+	var parameters = PhysicsPointQueryParameters2D.new()
+	parameters.position = get_global_mouse_position()
+	parameters.collide_with_areas = true
+	parameters.collision_mask = COLLISION_MASK_PLAYER_HAND
+	var result = space_state.intersect_point(parameters)
+	if result.size() > 0:
+		return result[0].collider.get_parent()  # retorna o HandArea
+	return null
+
 func get_card_with_highest_z_index(cards):
 	var highest_z_card = cards[0].collider.get_parent()
 	var highest_z_index = highest_z_card.z_index
